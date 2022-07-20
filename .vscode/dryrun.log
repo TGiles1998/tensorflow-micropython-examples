@@ -1,16 +1,16 @@
-make -f /Users/thomasgiles/esp-VS/tensorflow-micropython-examples-6/boards/stm32/NUCLEO_H743ZI2_MICROLITE/Makefile --dry-run --always-make --keep-going --print-directory
-make: Entering directory `/Users/thomasgiles/esp-VS/tensorflow-micropython-examples-6'
+make -f /Users/thomasgiles/esp-VS/tensorflow-micropython-examples-7/boards/stm32/NUCLEO_H743ZI2_MICROLITE/Makefile --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/thomasgiles/esp-VS/tensorflow-micropython-examples-7'
 /Applications/Xcode.app/Contents/Developer/usr/bin/make -C /Users/micropython/ports/stm32 \
 		PROJECT_TOP=/Users/thomasgiles \
 		BOARD=NUCLEO_H743ZI2_MICROLITE \
-		BOARD_DIR=/Users/thomasgiles/esp-VS/tensorflow-micropython-examples-6 \
-		BUILD=/Users/thomasgiles/esp-VS/tensorflow-micropython-examples-6/build
+		BOARD_DIR=/Users/thomasgiles/esp-VS/tensorflow-micropython-examples-7 \
+		BUILD=/Users/thomasgiles/esp-VS/tensorflow-micropython-examples-7/build
 make: Entering an unknown directory
 make: Leaving an unknown directory
-make: Leaving directory `/Users/thomasgiles/esp-VS/tensorflow-micropython-examples-6'
+make: Leaving directory `/Users/thomasgiles/esp-VS/tensorflow-micropython-examples-7'
  
-/Users/thomasgiles/esp-VS/tensorflow-micropython-examples-6/boards/stm32/NUCLEO_H743ZI2_MICROLITE/Makefile:23: /Users/micropython/py/mkenv.mk: No such file or directory
-/Users/thomasgiles/esp-VS/tensorflow-micropython-examples-6/boards/stm32/NUCLEO_H743ZI2_MICROLITE/Makefile:24: /Users/micropython/py/mkrules.mk: No such file or directory
+/Users/thomasgiles/esp-VS/tensorflow-micropython-examples-7/boards/stm32/NUCLEO_H743ZI2_MICROLITE/Makefile:23: /Users/micropython/py/mkenv.mk: No such file or directory
+/Users/thomasgiles/esp-VS/tensorflow-micropython-examples-7/boards/stm32/NUCLEO_H743ZI2_MICROLITE/Makefile:24: /Users/micropython/py/mkrules.mk: No such file or directory
 make: *** No rule to make target `/Users/micropython/py/mkrules.mk'.
 make: *** No rule to make target `/Users/micropython/py/mkenv.mk'.
 make: Failed to remake makefile `/Users/micropython/py/mkrules.mk'.

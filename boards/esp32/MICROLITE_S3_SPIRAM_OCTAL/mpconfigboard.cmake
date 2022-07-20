@@ -14,6 +14,7 @@ message (STATUS "mpconfigboard.cmake: PROJECT_DIR=${PROJECT_DIR}")
 
 set(USER_C_MODULES
     ${PROJECT_DIR}/micropython-modules/micropython.cmake
+    ${PROJECT_DIR}/micropython/examples/usercmodule/micropython.cmake
 )
 
 if(NOT MICROPY_FROZEN_MANIFEST)
