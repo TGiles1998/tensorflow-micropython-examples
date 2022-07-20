@@ -35,4 +35,4 @@ include(${CMAKE_CURRENT_LIST_DIR}/../micropython-ulab/code/micropython.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/micropython-camera-driver/micropython.cmake)
 
 # Single C Module
-include(${CMAKE_CURRENT_LIST_DIR}/usercmodule/cexample/micropython.cmake)
+#include(${CMAKE_CURRENT_LIST_DIR}/usercmodule/cexample/micropython.cmake)
