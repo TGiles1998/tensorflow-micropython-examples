@@ -34,4 +34,5 @@ include(${CMAKE_CURRENT_LIST_DIR}/../micropython-ulab/code/micropython.cmake)
 # the camera driver
 include(${CMAKE_CURRENT_LIST_DIR}/micropython-camera-driver/micropython.cmake)
 
-
+# UserCModules
+include(${CMAKE_CURRENT_LIST_DIR}/usercmodule/micropython.cmake)
