@@ -1,9 +1,10 @@
 // Include MicroPython API.
 #include "py/runtime.h"
-#include "py/stackctrl.h"
+//#include "py/stackctrl.h"
+//#include "py/mpconfig.h"
+//#include "py/modthread.h"
 //#include "py/mpthread.h"
-#include "py/mpconfig.h"
-#include "py/modthread.h"
+//#include <mpthreadport.h>
 
 
 #include "freertos/FreeRTOS.h"
@@ -11,24 +12,37 @@
 #include "freertos/semphr.h" // Defined here: xSemaphoreTake, xSemaphoreGive
 #include "freertos/queue.h"
 
-//typedef struct _mp_thread_mutex_t {
-//    SemaphoreHandle_t handle;
-//    StaticSemaphore_t buffer;
-//} mp_thread_mutex_t;
+typedef struct _mp_thread_mutex_t {
+    SemaphoreHandle_t handle;
+    StaticSemaphore_t buffer;
+} mp_thread_mutex_t;
 
-//int mp_thread_mutex_lock(mp_thread_mutex_t *mutex, int wait) {
-//    return pdTRUE == xSemaphoreTake(mutex->handle, wait ? portMAX_DELAY : 0);
-//}
-//
-//void mp_thread_mutex_unlock(mp_thread_mutex_t *mutex) {
-//    xSemaphoreGive(mutex->handle);
-//}
+int mp_thread_mutex_lock(mp_thread_mutex_t *mutex, int wait) {
+    return pdTRUE == xSemaphoreTake(mutex->handle, wait ? portMAX_DELAY : 0);
+}
 
-//#define MP_THREAD_MIN_STACK_SIZE                        (4 * 1024)
-//#define MP_THREAD_DEFAULT_STACK_SIZE                    (MP_THREAD_MIN_STACK_SIZE + 1024)
-//#define MP_THREAD_PRIORITY                              (ESP_TASK_PRIO_MIN + 1)
-//
-//STATIC mp_thread_mutex_t thread_mutex;
+void mp_thread_mutex_unlock(mp_thread_mutex_t *mutex) {
+    xSemaphoreGive(mutex->handle);
+}
+
+#define MP_THREAD_MIN_STACK_SIZE                        (4 * 1024)
+#define MP_THREAD_DEFAULT_STACK_SIZE                    (MP_THREAD_MIN_STACK_SIZE + 1024)
+#define MP_THREAD_PRIORITY                              (ESP_TASK_PRIO_MIN + 1)
+
+// this structure forms a linked list, one node per active thread
+typedef struct _mp_thread_t {
+    TaskHandle_t id;        // system id of thread
+    int ready;              // whether the thread is ready and running
+    void *arg;              // thread Python args, a GC root pointer
+    void *stack;            // pointer to the stack
+    size_t stack_len;       // number of words in the stack
+    struct _mp_thread_t *next;
+} mp_thread_t;
+
+// the mutex controls access to the linked list
+STATIC mp_thread_mutex_t thread_mutex;
+STATIC mp_thread_t thread_entry0;
+STATIC mp_thread_t *thread = NULL; // root pointer, handled by mp_thread_gc_others
 
 STATIC void *(*ext_thread_entry)(void *) = NULL;
 
@@ -52,7 +66,7 @@ void mp_my_thread_create_ex(void *(*entry)(void *), void *arg, size_t *stack_siz
     }
 
     // Allocate linked-list node (must be outside thread_mutex lock)
-//    mp_thread_t *th = m_new_obj(mp_thread_t);
+    mp_thread_t *th = m_new_obj(mp_thread_t);
 
     mp_thread_mutex_lock(&thread_mutex, 1);
 
