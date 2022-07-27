@@ -1,3 +1,5 @@
+
+#include <string.h>
 // Include MicroPython API.
 #include "py/runtime.h"
 //#include "py/stackctrl.h"
@@ -5,7 +7,6 @@
 //#include "py/modthread.c"
 //#include "py/mpthread.h"
 //#include <mpthreadport.h>
-
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -47,10 +48,17 @@ STATIC mp_my_thread_mutex_t thread_mutex;
 STATIC mp_my_thread_t thread_entry0;
 STATIC mp_my_thread_t *thread = NULL; // root pointer, handled by mp_my_thread_gc_others
 
-
 void mp_my_thread_set_state(mp_state_thread_t *state) {
     vTaskSetThreadLocalStoragePointer(NULL, 1, state);
 }
+
+void mp_my_thread_mutex_init(mp_thread_mutex_t *mutex) {
+    // Need a binary semaphore so a lock can be acquired on one Python thread
+    // and then released on another.
+    mutex->handle = xSemaphoreCreateBinaryStatic(&mutex->buffer);
+    xSemaphoreGive(mutex->handle);
+}
+
 
 void mp_my_thread_init(void *stack, uint32_t stack_len) {
     mp_my_thread_set_state(&mp_state_ctx.thread);
@@ -80,6 +88,71 @@ STATIC void freertos_entry(void *arg) {
     vTaskDelete(NULL);
     for (;;) {;
     }
+}
+
+STATIC void *thread_entry(void *args_in) {
+    // Execution begins here for a new thread.  We do not have the GIL.
+
+    thread_entry_args_t *args = (thread_entry_args_t *)args_in;
+
+    mp_state_thread_t ts;
+    mp_thread_set_state(&ts);
+
+    mp_stack_set_top(&ts + 1); // need to include ts in root-pointer scan
+    mp_stack_set_limit(args->stack_size);
+
+    #if MICROPY_ENABLE_PYSTACK
+    // TODO threading and pystack is not fully supported, for now just make a small stack
+    mp_obj_t mini_pystack[128];
+    mp_pystack_init(mini_pystack, &mini_pystack[128]);
+    #endif
+
+    // The GC starts off unlocked on this thread.
+    ts.gc_lock_depth = 0;
+
+    ts.mp_pending_exception = MP_OBJ_NULL;
+
+    // set locals and globals from the calling context
+    mp_locals_set(args->dict_locals);
+    mp_globals_set(args->dict_globals);
+
+    MP_THREAD_GIL_ENTER();
+
+    // signal that we are set up and running
+    mp_thread_start();
+
+    // TODO set more thread-specific state here:
+    //  cur_exception (root pointer)
+
+    DEBUG_printf("[thread] start ts=%p args=%p stack=%p\n", &ts, &args, MP_STATE_THREAD(stack_top));
+
+    nlr_buf_t nlr;
+    if (nlr_push(&nlr) == 0) {
+        mp_call_function_n_kw(args->fun, args->n_args, args->n_kw, args->args);
+        nlr_pop();
+    } else {
+        // uncaught exception
+        // check for SystemExit
+        mp_obj_base_t *exc = (mp_obj_base_t *)nlr.ret_val;
+        if (mp_obj_is_subclass_fast(MP_OBJ_FROM_PTR(exc->type), MP_OBJ_FROM_PTR(&mp_type_SystemExit))) {
+            // swallow exception silently
+        } else {
+            // print exception out
+            mp_printf(MICROPY_ERROR_PRINTER, "Unhandled exception in thread started by ");
+            mp_obj_print_helper(MICROPY_ERROR_PRINTER, args->fun, PRINT_REPR);
+            mp_printf(MICROPY_ERROR_PRINTER, "\n");
+            mp_obj_print_exception(MICROPY_ERROR_PRINTER, MP_OBJ_FROM_PTR(exc));
+        }
+    }
+
+    DEBUG_printf("[thread] finish ts=%p\n", &ts);
+
+    // signal that we are finished
+    mp_thread_finish();
+
+    MP_THREAD_GIL_EXIT();
+
+    return NULL;
 }
 
 void mp_my_thread_create_ex(void *(*entry)(void *), void *arg, size_t *stack_size, int priority, char *name) {
@@ -124,13 +197,6 @@ void mp_my_thread_create(void *(*entry)(void *), void *arg, size_t *stack_size) 
     mp_my_thread_init(pxTaskGetStackStart(NULL), MP_MY_TASK_STACK_SIZE / sizeof(uintptr_t));
 
     mp_my_thread_create_ex(entry, arg, stack_size, MP_THREAD_PRIORITY, "mp_thread");
-}
-
-void mp_my_thread_mutex_init(mp_thread_mutex_t *mutex) {
-    // Need a binary semaphore so a lock can be acquired on one Python thread
-    // and then released on another.
-    mutex->handle = xSemaphoreCreateBinaryStatic(&mutex->buffer);
-    xSemaphoreGive(mutex->handle);
 }
 
 STATIC size_t thread_stack_size = 0;
