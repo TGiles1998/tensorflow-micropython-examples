@@ -2,6 +2,8 @@
 #include <string.h>
 // Include MicroPython API.
 #include "py/runtime.h"
+#include "py/stackctrl.h"
+
 //#include "py/stackctrl.h"
 //#include "py/mpconfig.h"
 //#include "py/modthread.c"
@@ -78,6 +80,20 @@ void mp_my_thread_init(void *stack, uint32_t stack_len) {
     thread = &thread_entry0;
 }
 
+void mp_my_thread_set_state(mp_state_thread_t *state) {
+    vTaskSetThreadLocalStoragePointer(NULL, 1, state);
+}
+
+void mp_thread_start(void) {
+    mp_my_thread_mutex_lock(&thread_mutex, 1);
+    for (mp_my_thread_t *th = thread; th != NULL; th = th->next) {
+        if (th->id == xTaskGetCurrentTaskHandle()) {
+            th->ready = 1;
+            break;
+        }
+    }
+    mp_my_thread_mutex_unlock(&thread_mutex);
+}
 
 STATIC void *(*ext_thread_entry)(void *) = NULL;
 
@@ -90,13 +106,24 @@ STATIC void freertos_entry(void *arg) {
     }
 }
 
+typedef struct _thread_entry_args_t {
+    mp_obj_dict_t *dict_locals;
+    mp_obj_dict_t *dict_globals;
+    size_t stack_size;
+    mp_obj_t fun;
+    size_t n_args;
+    size_t n_kw;
+    mp_obj_t args[];
+} thread_entry_args_t;
+
+
 STATIC void *thread_entry(void *args_in) {
     // Execution begins here for a new thread.  We do not have the GIL.
 
-    thread_entry_args_t *args = (thread_entry_args_t *)args_in;
+    thread_entry_args_t *args = (thread_entry_args_t *)args_in; // good
 
-    mp_state_thread_t ts;
-    mp_thread_set_state(&ts);
+    mp_state_thread_t ts; // Maybe
+    mp_my_thread_set_state(&ts); // Good
 
     mp_stack_set_top(&ts + 1); // need to include ts in root-pointer scan
     mp_stack_set_limit(args->stack_size);
@@ -113,8 +140,8 @@ STATIC void *thread_entry(void *args_in) {
     ts.mp_pending_exception = MP_OBJ_NULL;
 
     // set locals and globals from the calling context
-    mp_locals_set(args->dict_locals);
-    mp_globals_set(args->dict_globals);
+    mp_locals_set(args->dict_locals); // Runtime
+    mp_globals_set(args->dict_globals); // Runtime
 
     MP_THREAD_GIL_ENTER();
 
@@ -211,15 +238,6 @@ STATIC mp_obj_t example_add_ints(mp_obj_t a_obj, mp_obj_t b_obj) {
     return mp_obj_new_int(a + b);
 }
 
-typedef struct _thread_entry_args_t {
-    mp_obj_dict_t *dict_locals;
-    mp_obj_dict_t *dict_globals;
-    size_t stack_size;
-    mp_obj_t fun;
-    size_t n_args;
-    size_t n_kw;
-    mp_obj_t args[];
-} thread_entry_args_t;
 
 STATIC mp_obj_t mod_my_thread_start_new_thread(size_t n_args, const mp_obj_t *args) {
     // This structure holds the Python function and arguments for thread entry.
