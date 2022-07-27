@@ -4,16 +4,18 @@
 #include "py/runtime.h"
 #include "py/stackctrl.h"
 
-//#include "py/stackctrl.h"
-//#include "py/mpconfig.h"
-//#include "py/modthread.c"
-//#include "py/mpthread.h"
-//#include <mpthreadport.h>
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h" // Defined here: xSemaphoreTake, xSemaphoreGive
 #include "freertos/queue.h"
+
+#if MICROPY_DEBUG_VERBOSE // print debugging info
+#define DEBUG_PRINT (1)
+#define DEBUG_printf DEBUG_printf
+#else // don't print debugging info
+#define DEBUG_PRINT (0)
+#define DEBUG_printf(...) (void)0
+#endif
 
 #define MP_MY_TASK_STACK_SIZE      (16 * 1024)
 #define ESP_TASK_PRIO_MIN (0)
