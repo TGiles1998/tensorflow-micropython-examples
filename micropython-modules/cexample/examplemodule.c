@@ -191,7 +191,7 @@ STATIC void *thread_entry(void *args_in) {
     return NULL;
 }
 
-void mp_my_thread_create_ex(void *(*entry)(void *), void *arg, size_t *stack_size, int priority, char *name) {
+void mp_my_thread_create_ex(void *(*entry)(void *), void *arg, size_t *stack_size, int priority, char *name, int core_id) {
     // store thread entry function into a global variable so we can access it
     ext_thread_entry = entry;
 
@@ -207,7 +207,7 @@ void mp_my_thread_create_ex(void *(*entry)(void *), void *arg, size_t *stack_siz
     mp_my_thread_mutex_lock(&thread_mutex, 1);
 
     // create thread
-    BaseType_t result = xTaskCreatePinnedToCore(freertos_entry, name, *stack_size / sizeof(StackType_t), arg, priority, &th->id, 0);//MP_TASK_COREID
+    BaseType_t result = xTaskCreatePinnedToCore(freertos_entry, name, *stack_size / sizeof(StackType_t), arg, priority, &th->id, core_id);//MP_TASK_COREID
     if (result != pdPASS) {
         mp_my_thread_mutex_unlock(&thread_mutex);
         mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("can't create thread"));
@@ -227,12 +227,12 @@ void mp_my_thread_create_ex(void *(*entry)(void *), void *arg, size_t *stack_siz
     mp_my_thread_mutex_unlock(&thread_mutex);
 }
 
-void mp_my_thread_create(void *(*entry)(void *), void *arg, size_t *stack_size) {
+void mp_my_thread_create(void *(*entry)(void *), void *arg, size_t *stack_size, int core_id) {
 
     // Initialise my thread
     mp_my_thread_init(pxTaskGetStackStart(NULL), MP_MY_TASK_STACK_SIZE / sizeof(uintptr_t));
 
-    mp_my_thread_create_ex(entry, arg, stack_size, MP_THREAD_PRIORITY, "mp_thread");
+    mp_my_thread_create_ex(entry, arg, stack_size, MP_THREAD_PRIORITY, "mp_thread", core_id);
 }
 
 STATIC size_t thread_stack_size = 0;
@@ -260,27 +260,28 @@ STATIC mp_obj_t mod_my_thread_start_new_thread(size_t n_args, const mp_obj_t *ar
     mp_obj_t *pos_args_items;
     mp_obj_get_array(args[1], &pos_args_len, &pos_args_items);
 
-    // check for keyword arguments
-    if (n_args == 2) {
-        // just position arguments
-        th_args = m_new_obj_var(thread_entry_args_t, mp_obj_t, pos_args_len);
-        th_args->n_kw = 0;
-    } else {
-        // positional and keyword arguments
-        if (mp_obj_get_type(args[2]) != &mp_type_dict) {
-            mp_raise_TypeError(MP_ERROR_TEXT("expecting a dict for keyword args"));
-        }
-        mp_map_t *map = &((mp_obj_dict_t *)MP_OBJ_TO_PTR(args[2]))->map;
-        th_args = m_new_obj_var(thread_entry_args_t, mp_obj_t, pos_args_len + 2 * map->used);
-        th_args->n_kw = map->used;
-        // copy across the keyword arguments
-        for (size_t i = 0, n = pos_args_len; i < map->alloc; ++i) {
-            if (mp_map_slot_is_filled(map, i)) {
-                th_args->args[n++] = map->table[i].key;
-                th_args->args[n++] = map->table[i].value;
-            }
-        }
-    }
+//    // check for keyword arguments
+//    if (n_args == 2) {
+//
+//    } else {
+//        // positional and keyword arguments
+//        if (mp_obj_get_type(args[2]) != &mp_type_dict) {
+//            mp_raise_TypeError(MP_ERROR_TEXT("expecting a dict for keyword args"));
+//        }
+//        mp_map_t *map = &((mp_obj_dict_t *)MP_OBJ_TO_PTR(args[2]))->map;
+//        th_args = m_new_obj_var(thread_entry_args_t, mp_obj_t, pos_args_len + 2 * map->used);
+//        th_args->n_kw = map->used;
+//        // copy across the keyword arguments
+//        for (size_t i = 0, n = pos_args_len; i < map->alloc; ++i) {
+//            if (mp_map_slot_is_filled(map, i)) {
+//                th_args->args[n++] = map->table[i].key;
+//                th_args->args[n++] = map->table[i].value;
+//            }
+//        }
+//    }
+    // just position arguments
+    th_args = m_new_obj_var(thread_entry_args_t, mp_obj_t, pos_args_len);
+    th_args->n_kw = 0;
 
     // copy across the positional arguments
     th_args->n_args = pos_args_len;
@@ -296,8 +297,11 @@ STATIC mp_obj_t mod_my_thread_start_new_thread(size_t n_args, const mp_obj_t *ar
     // set the function for thread entry
     th_args->fun = args[0];
 
+    // Gets the core id
+    int core_id = mp_obj_get_int(args[2]);
+
     // spawn the thread!
-    mp_my_thread_create(thread_entry, th_args, &th_args->stack_size);
+    mp_my_thread_create(thread_entry, th_args, &th_args->stack_size, core_id);
 
     return mp_const_none;
 }
