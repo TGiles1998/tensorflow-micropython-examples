@@ -133,6 +133,8 @@ void mp_my_thread_mutex_init(mp_thread_mutex_t *mutex) {
     xSemaphoreGive(mutex->handle);
 }
 
+STATIC size_t thread_stack_size = 0;
+
 // This is the function which will be called from Python as cexample.add_ints(a, b).
 STATIC mp_obj_t example_add_ints(mp_obj_t a_obj, mp_obj_t b_obj) {
     // Extract the ints from the micropython input objects.
@@ -231,3 +233,4 @@ const mp_obj_module_t example_user_cmodule = {
 
 // Register the module to make it available in Python.
 MP_REGISTER_MODULE(MP_QSTR_cexample, example_user_cmodule, 1);
+
