@@ -80,7 +80,7 @@ void mp_my_thread_init(void *stack, uint32_t stack_len) {
     thread = &thread_entry0;
 }
 
-void mp_thread_start(void) {
+void mp_my_thread_start(void) {
     mp_my_thread_mutex_lock(&thread_mutex, 1);
     for (mp_my_thread_t *th = thread; th != NULL; th = th->next) {
         if (th->id == xTaskGetCurrentTaskHandle()) {
@@ -100,6 +100,17 @@ STATIC void freertos_entry(void *arg) {
     vTaskDelete(NULL);
     for (;;) {;
     }
+}
+
+void mp_my_thread_finish(void) {
+    mp_my_thread_mutex_lock(&thread_mutex, 1);
+    for (mp_my_thread_t *th = thread; th != NULL; th = th->next) {
+        if (th->id == xTaskGetCurrentTaskHandle()) {
+            th->ready = 0;
+            break;
+        }
+    }
+    mp_my_thread_mutex_unlock(&thread_mutex);
 }
 
 typedef struct _thread_entry_args_t {
@@ -142,7 +153,7 @@ STATIC void *thread_entry(void *args_in) {
     MP_THREAD_GIL_ENTER();
 
     // signal that we are set up and running
-    mp_thread_start();
+    mp_my_thread_start();
 
     // TODO set more thread-specific state here:
     //  cur_exception (root pointer)
@@ -171,7 +182,7 @@ STATIC void *thread_entry(void *args_in) {
     DEBUG_printf("[thread] finish ts=%p\n", &ts);
 
     // signal that we are finished
-    mp_thread_finish();
+    mp_my_thread_finish();
 
     MP_THREAD_GIL_EXIT();
 
