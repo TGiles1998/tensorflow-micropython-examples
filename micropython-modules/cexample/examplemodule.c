@@ -1,7 +1,7 @@
 // Include MicroPython API.
 #include "py/runtime.h"
 #include "py/stackctrl.h"
-//#include "py/mpthread.h"
+#include "py/mpthread.h"
 #include "py/mpconfig.h"
 
 
@@ -23,9 +23,26 @@
 //    xSemaphoreGive(mutex->handle);
 //}
 
+//#define MP_THREAD_MIN_STACK_SIZE                        (4 * 1024)
+//#define MP_THREAD_DEFAULT_STACK_SIZE                    (MP_THREAD_MIN_STACK_SIZE + 1024)
+//#define MP_THREAD_PRIORITY                              (ESP_TASK_PRIO_MIN + 1)
+//
+//STATIC mp_thread_mutex_t thread_mutex;
+
+STATIC void *(*ext_thread_entry)(void *) = NULL;
+
+STATIC void freertos_entry(void *arg) {
+    if (ext_thread_entry) {
+        ext_thread_entry(arg);
+    }
+    vTaskDelete(NULL);
+    for (;;) {;
+    }
+}
+
 void mp_my_thread_create_ex(void *(*entry)(void *), void *arg, size_t *stack_size, int priority, char *name) {
     // store thread entry function into a global variable so we can access it
-    //ext_thread_entry = entry;
+    ext_thread_entry = entry;
 
     if (*stack_size == 0) {
         *stack_size = MP_THREAD_DEFAULT_STACK_SIZE; // default stack size
@@ -34,12 +51,12 @@ void mp_my_thread_create_ex(void *(*entry)(void *), void *arg, size_t *stack_siz
     }
 
     // Allocate linked-list node (must be outside thread_mutex lock)
-    mp_thread_t *th = m_new_obj(mp_thread_t);
+//    mp_thread_t *th = m_new_obj(mp_thread_t);
 
     mp_thread_mutex_lock(&thread_mutex, 1);
 
     // create thread
-    BaseType_t result = xTaskCreatePinnedToCore(freertos_entry, name, *stack_size / sizeof(StackType_t), arg, priority, &th->id, MP_TASK_COREID);
+    BaseType_t result = xTaskCreatePinnedToCore(freertos_entry, name, *stack_size / sizeof(StackType_t), arg, priority, &th->id, 0);//MP_TASK_COREID
     if (result != pdPASS) {
         mp_thread_mutex_unlock(&thread_mutex);
         mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("can't create thread"));
