@@ -54,7 +54,7 @@ void mp_my_thread_set_state(mp_state_thread_t *state) {
     vTaskSetThreadLocalStoragePointer(NULL, 1, state);
 }
 
-void mp_my_thread_mutex_init(mp_thread_mutex_t *mutex) {
+void mp_my_thread_mutex_init(mp_my_thread_mutex_t *mutex) {
     // Need a binary semaphore so a lock can be acquired on one Python thread
     // and then released on another.
     mutex->handle = xSemaphoreCreateBinaryStatic(&mutex->buffer);
