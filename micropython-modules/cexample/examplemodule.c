@@ -1,8 +1,9 @@
 // Include MicroPython API.
 #include "py/runtime.h"
 #include "py/stackctrl.h"
-#include "py/mpthread.h"
+//#include "py/mpthread.h"
 #include "py/mpconfig.h"
+#include "py/modthread.h"
 
 
 #include "freertos/FreeRTOS.h"
