@@ -12,8 +12,8 @@
 #include "freertos/semphr.h" // Defined here: xSemaphoreTake, xSemaphoreGive
 #include "freertos/queue.h"
 
-#define MP_TASK_STACK_SIZE      (16 * 1024)
-
+#define MP_MY_TASK_STACK_SIZE      (16 * 1024)
+#define ESP_TASK_PRIO_MIN (0)
 
 typedef struct _mp_my_thread_mutex_t {
     SemaphoreHandle_t handle;
@@ -121,9 +121,16 @@ void mp_my_thread_create_ex(void *(*entry)(void *), void *arg, size_t *stack_siz
 void mp_my_thread_create(void *(*entry)(void *), void *arg, size_t *stack_size) {
 
     // Initialise my thread
-    mp_my_thread_init(pxTaskGetStackStart(NULL), MP_TASK_STACK_SIZE / sizeof(uintptr_t));
+    mp_my_thread_init(pxTaskGetStackStart(NULL), MP_MY_TASK_STACK_SIZE / sizeof(uintptr_t));
 
     mp_my_thread_create_ex(entry, arg, stack_size, MP_THREAD_PRIORITY, "mp_thread");
+}
+
+void mp_my_thread_mutex_init(mp_thread_mutex_t *mutex) {
+    // Need a binary semaphore so a lock can be acquired on one Python thread
+    // and then released on another.
+    mutex->handle = xSemaphoreCreateBinaryStatic(&mutex->buffer);
+    xSemaphoreGive(mutex->handle);
 }
 
 // This is the function which will be called from Python as cexample.add_ints(a, b).
@@ -135,6 +142,16 @@ STATIC mp_obj_t example_add_ints(mp_obj_t a_obj, mp_obj_t b_obj) {
     // Calculate the addition and convert to MicroPython object.
     return mp_obj_new_int(a + b);
 }
+
+typedef struct _thread_entry_args_t {
+    mp_obj_dict_t *dict_locals;
+    mp_obj_dict_t *dict_globals;
+    size_t stack_size;
+    mp_obj_t fun;
+    size_t n_args;
+    size_t n_kw;
+    mp_obj_t args[];
+} thread_entry_args_t;
 
 STATIC mp_obj_t mod_my_thread_start_new_thread(size_t n_args, const mp_obj_t *args) {
     // This structure holds the Python function and arguments for thread entry.
