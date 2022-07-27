@@ -7,25 +7,25 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "freertos/semphr.h"
+#include "freertos/semphr.h" // Defined here: xSemaphoreTake, xSemaphoreGive
 #include "freertos/queue.h"
 
-typedef struct _mp_thread_mutex_t {
-    SemaphoreHandle_t handle;
-    StaticSemaphore_t buffer;
-} mp_thread_mutex_t;
+//typedef struct _mp_thread_mutex_t {
+//    SemaphoreHandle_t handle;
+//    StaticSemaphore_t buffer;
+//} mp_thread_mutex_t;
 
-int mp_thread_mutex_lock(mp_thread_mutex_t *mutex, int wait) {
-    return pdTRUE == xSemaphoreTake(mutex->handle, wait ? portMAX_DELAY : 0);
-}
+//int mp_thread_mutex_lock(mp_thread_mutex_t *mutex, int wait) {
+//    return pdTRUE == xSemaphoreTake(mutex->handle, wait ? portMAX_DELAY : 0);
+//}
+//
+//void mp_thread_mutex_unlock(mp_thread_mutex_t *mutex) {
+//    xSemaphoreGive(mutex->handle);
+//}
 
-void mp_thread_mutex_unlock(mp_thread_mutex_t *mutex) {
-    xSemaphoreGive(mutex->handle);
-}
-
-void mp_thread_create_ex(void *(*entry)(void *), void *arg, size_t *stack_size, int priority, char *name) {
+void mp_my_thread_create_ex(void *(*entry)(void *), void *arg, size_t *stack_size, int priority, char *name) {
     // store thread entry function into a global variable so we can access it
-    ext_thread_entry = entry;
+    //ext_thread_entry = entry;
 
     if (*stack_size == 0) {
         *stack_size = MP_THREAD_DEFAULT_STACK_SIZE; // default stack size
@@ -59,8 +59,8 @@ void mp_thread_create_ex(void *(*entry)(void *), void *arg, size_t *stack_size, 
     mp_thread_mutex_unlock(&thread_mutex);
 }
 
-void mp_thread_create(void *(*entry)(void *), void *arg, size_t *stack_size) {
-    mp_thread_create_ex(entry, arg, stack_size, MP_THREAD_PRIORITY, "mp_thread");
+void mp_my_thread_create(void *(*entry)(void *), void *arg, size_t *stack_size) {
+    mp_my_thread_create_ex(entry, arg, stack_size, MP_THREAD_PRIORITY, "mp_thread");
 }
 
 // This is the function which will be called from Python as cexample.add_ints(a, b).
@@ -73,7 +73,7 @@ STATIC mp_obj_t example_add_ints(mp_obj_t a_obj, mp_obj_t b_obj) {
     return mp_obj_new_int(a + b);
 }
 
-STATIC mp_obj_t mod_thread_start_new_thread(size_t n_args, const mp_obj_t *args) {
+STATIC mp_obj_t mod_my_thread_start_new_thread(size_t n_args, const mp_obj_t *args) {
     // This structure holds the Python function and arguments for thread entry.
     // We copy all arguments into this structure to keep ownership of them.
     // We must be very careful about root pointers because this pointer may
@@ -122,14 +122,14 @@ STATIC mp_obj_t mod_thread_start_new_thread(size_t n_args, const mp_obj_t *args)
     th_args->fun = args[0];
 
     // spawn the thread!
-    mp_thread_create(thread_entry, th_args, &th_args->stack_size);
+    mp_my_thread_create(thread_entry, th_args, &th_args->stack_size);
 
     return mp_const_none;
 }
 
 // Define a Python reference to the function above.
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(example_add_ints_obj, example_add_ints);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_thread_start_new_thread_obj, 2, 3, mod_thread_start_new_thread);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_my_thread_start_new_thread_obj, 2, 3, mod_my_thread_start_new_thread);
 
 // Define all properties of the module.
 // Table entries are key/value pairs of the attribute name (a string)
@@ -139,7 +139,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_thread_start_new_thread_obj, 2, 3
 STATIC const mp_rom_map_elem_t example_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_cexample) },
     { MP_ROM_QSTR(MP_QSTR_add_ints), MP_ROM_PTR(&example_add_ints_obj) },
-    { MP_ROM_QSTR(MP_QSTR_start_new_thread), MP_ROM_PTR(&mod_thread_start_new_thread_obj) },
+    { MP_ROM_QSTR(MP_QSTR_start_new_thread), MP_ROM_PTR(&mod_my_thread_start_new_thread_obj) },
 };
 STATIC MP_DEFINE_CONST_DICT(example_module_globals, example_module_globals_table);
 
