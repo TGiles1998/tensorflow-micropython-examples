@@ -47,6 +47,7 @@ interp.invoke()
 
 print("Classify Person Image")
 
+
 no_person_test_image_file = open ('person_image_data.dat', 'rb')
 
 no_person_test_image_file.readinto(test_image)
