@@ -80,10 +80,6 @@ void mp_my_thread_init(void *stack, uint32_t stack_len) {
     thread = &thread_entry0;
 }
 
-void mp_my_thread_set_state(mp_state_thread_t *state) {
-    vTaskSetThreadLocalStoragePointer(NULL, 1, state);
-}
-
 void mp_thread_start(void) {
     mp_my_thread_mutex_lock(&thread_mutex, 1);
     for (mp_my_thread_t *th = thread; th != NULL; th = th->next) {
