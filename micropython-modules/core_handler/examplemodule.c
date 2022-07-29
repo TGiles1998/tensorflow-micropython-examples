@@ -48,7 +48,7 @@ typedef struct _core_thread_entry_args_t {
     mp_obj_t args[];
 } core_thread_entry_args_t;
 
-void run_function(args) {
+void run_function(core_thread_entry_args_t args) {
     nlr_buf_t nlr;
     if (nlr_push(&nlr) == 0) {
         mp_call_function_n_kw(args->fun, args->n_args, args->n_kw, args->args);
@@ -69,7 +69,7 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
     mp_obj_get_array(args[1], &pos_args_len, &pos_args_items);
 
     // just position arguments
-    th_args = m_new_obj_var(core_thread_stack_sizere_thread_entry_args_t, mp_obj_t, pos_args_len);
+    th_args = m_new_obj_var(core_thread_entry_args_t, mp_obj_t, pos_args_len);
     th_args->n_kw = 0;
 
     // copy across the positional arguments
