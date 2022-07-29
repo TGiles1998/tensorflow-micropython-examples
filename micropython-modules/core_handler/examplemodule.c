@@ -106,7 +106,7 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
 
 // Define a Python reference to the function above.
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(example_add_ints_obj, example_add_ints);
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_core_function_obj, 2, 3, mod_core_function);
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_core_function_obj, 2, 6, mod_core_function);
 
 // Define all properties of the module.
 // Table entries are key/value pairs of the attribute name (a string)
