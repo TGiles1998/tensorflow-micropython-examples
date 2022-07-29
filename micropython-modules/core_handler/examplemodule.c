@@ -1,6 +1,4 @@
-// Include MicroPython API.
 #include <string.h>
-// Include MicroPython API.
 #include "py/runtime.h"
 #include "py/stackctrl.h"
 #include "py/nlr.h"
@@ -14,8 +12,6 @@
 
 //#define MP_THREAD_MIN_STACK_SIZE                        (4 * 1024)
 //#define MP_THREAD_DEFAULT_STACK_SIZE                    (MP_THREAD_MIN_STACK_SIZE + 1024)
-
-STATIC size_t thread_stack_size = 0;
 
 
 // This is the function which will be called from Python as cexample.add_ints(a, b).
@@ -64,6 +60,7 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
     // We copy all arguments into this structure to keep ownership of them.
     // We must be very careful about root pointers because this pointer may
     // disappear from our address space before the thread is created.
+    core_thread_entry_args_t *th_args;
 
     // get positional arguments
     size_t pos_args_len;
@@ -71,7 +68,7 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
     mp_obj_get_array(args[1], &pos_args_len, &pos_args_items);
 
     // just position arguments
-    th_args = m_new_obj_var(core_thread_entry_args_t, mp_obj_t, pos_args_len);
+    th_args = m_new_obj_var(cothread_stack_sizere_thread_entry_args_t, mp_obj_t, pos_args_len);
     th_args->n_kw = 0;
 
     // copy across the positional arguments
@@ -82,12 +79,11 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
     th_args->dict_locals = mp_locals_get();
     th_args->dict_globals = mp_globals_get();
 
-
     // set the function for thread entry
     th_args->fun = args[0];
 
     // Gets the core id
-    char name = mp_obj_get_type_str(args[2]); //Task1
+    const char* name = mp_obj_get_type_str(args[2]); //Task1
     mp_printf(MICROPY_ERROR_PRINTER, "\n Task1code is cool core 1 \n");
     int stack_size = mp_obj_get_int(args[3]);  // 10000
     int priority = mp_obj_get_int(args[4]);  // 1
@@ -96,17 +92,6 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
     // set the stack size to use
     th_args->stack_size = stack_size;
 
-//    BaseType_t result = xTaskCreatePinnedToCore(
-//        freertos_entry,
-//        name,
-//        *stack_size / sizeof(StackType_t),
-//        th_args,
-//        priority,
-//        &th->id,
-//        core_id,
-//    );
-//    mp_printf(MICROPY_ERROR_PRINTER, n_args);
-//    mp_printf(MICROPY_ERROR_PRINTER, args);
     TaskHandle_t Task1;
 
     core_thread_entry_args_t *in_args = (core_thread_entry_args_t *)th_args;
