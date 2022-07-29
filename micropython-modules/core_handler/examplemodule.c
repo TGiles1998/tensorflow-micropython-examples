@@ -37,30 +37,30 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
     // We copy all arguments into this structure to keep ownership of them.
     // We must be very careful about root pointers because this pointer may
     // disappear from our address space before the thread is created.
-    thread_entry_args_t *th_args;
-    
-    // get positional arguments
-    size_t pos_args_len;
-    mp_obj_t *pos_args_items;
-    mp_obj_get_array(args[1], &pos_args_len, &pos_args_items);
-
-    // just position arguments
-    th_args = m_new_obj_var(thread_entry_args_t, mp_obj_t, pos_args_len);
-    th_args->n_kw = 0;
-    
-    // copy across the positional arguments
-    th_args->n_args = pos_args_len;
-    memcpy(th_args->args, pos_args_items, pos_args_len * sizeof(mp_obj_t));
-    
-    // pass our locals and globals into the new thread
-    th_args->dict_locals = mp_locals_get();
-    th_args->dict_globals = mp_globals_get();
-    
-    // set the stack size to use
-    th_args->stack_size = thread_stack_size;
-    
-    // set the function for thread entry
-    th_args->fun = args[0];
+//    thread_entry_args_t *th_args;
+//
+//    // get positional arguments
+//    size_t pos_args_len;
+//    mp_obj_t *pos_args_items;
+//    mp_obj_get_array(args[1], &pos_args_len, &pos_args_items);
+//
+//    // just position arguments
+//    th_args = m_new_obj_var(thread_entry_args_t, mp_obj_t, pos_args_len);
+//    th_args->n_kw = 0;
+//
+//    // copy across the positional arguments
+//    th_args->n_args = pos_args_len;
+//    memcpy(th_args->args, pos_args_items, pos_args_len * sizeof(mp_obj_t));
+//
+//    // pass our locals and globals into the new thread
+//    th_args->dict_locals = mp_locals_get();
+//    th_args->dict_globals = mp_globals_get();
+//
+//    // set the stack size to use
+//    th_args->stack_size = thread_stack_size;
+//
+//    // set the function for thread entry
+//    th_args->fun = args[0];
     
     // Gets the core id
 //    int core_id = mp_obj_get_int(args[2]);
@@ -74,6 +74,9 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
 //        &th->id,
 //        core_id,
 //    );
+    n_args;
+    args;
+
     TaskHandle_t Task1;
     TaskHandle_t Task2;
 
