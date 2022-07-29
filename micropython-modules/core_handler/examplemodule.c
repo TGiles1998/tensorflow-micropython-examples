@@ -6,7 +6,7 @@
 #include "freertos/semphr.h" // Defined here: xSemaphoreTake, xSemaphoreGive
 #include "freertos/queue.h"
 
-#define portTICK_PERIOD_MS = 10;
+//#define portTICK_PERIOD_MS = 10;
 
 // This is the function which will be called from Python as cexample.add_ints(a, b).
 STATIC mp_obj_t example_add_ints(mp_obj_t a_obj, mp_obj_t b_obj) {
@@ -22,13 +22,13 @@ STATIC mp_obj_t example_add_ints(mp_obj_t a_obj, mp_obj_t b_obj) {
 void task1code( void * pvParameters ) {
     for(;;){
         mp_printf(MICROPY_ERROR_PRINTER, "Task1code is cool core 1");
-        vTaskDelay(500 / portTICK_PERIOD_MS);
+        vTaskDelay(500 / 10);
     }
 }
 void task2code( void * pvParameters ) {
     for(;;){
         mp_printf(MICROPY_ERROR_PRINTER, "Task2code is cool core 0");
-        vTaskDelay(700 / portTICK_PERIOD_MS);
+        vTaskDelay(700 / 10);
     }
 }
 
