@@ -1,6 +1,11 @@
 // Include MicroPython API.
 #include "py/runtime.h"
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/semphr.h" // Defined here: xSemaphoreTake, xSemaphoreGive
+#include "freertos/queue.h"
+
 // This is the function which will be called from Python as cexample.add_ints(a, b).
 STATIC mp_obj_t example_add_ints(mp_obj_t a_obj, mp_obj_t b_obj) {
     // Extract the ints from the micropython input objects.
@@ -14,14 +19,13 @@ STATIC mp_obj_t example_add_ints(mp_obj_t a_obj, mp_obj_t b_obj) {
     // Calculate the addition and convert to MicroPython object.
     return mp_obj_new_int(a + b);
 }
-
-void Task1code( void * pvParameters ){
+void task1code( void * pvParameters ) {
     for(;;){
         mp_printf(MICROPY_ERROR_PRINTER, "Task1code is cool core 1");
         delay(500);
     }
 }
-void Task2code( void * pvParameters ){
+void task2code( void * pvParameters ) {
     for(;;){
         mp_printf(MICROPY_ERROR_PRINTER, "Task2code is cool core 0");
         delay(700);
@@ -70,8 +74,8 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
 //        &th->id,
 //        core_id,
 //    );
-    xTaskCreatePinnedToCore(Task1code, "Task1", 10000, NULL, 1, &Task1, 1);
-    xTaskCreatePinnedToCore(Task1code, "Task2", 10000, NULL, 1, &Task1, 0);
+    xTaskCreatePinnedToCore(task1code, "Task1", 10000, NULL, 1, &Task1, 1);
+    xTaskCreatePinnedToCore(task2code, "Task2", 10000, NULL, 1, &Task1, 0);
 
     return mp_const_none;
 }
