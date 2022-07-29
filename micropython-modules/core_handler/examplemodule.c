@@ -63,7 +63,7 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
     th_args->fun = args[0];
     
     // Gets the core id
-    int core_id = mp_obj_get_int(args[2]);
+//    int core_id = mp_obj_get_int(args[2]);
 
 //    BaseType_t result = xTaskCreatePinnedToCore(
 //        freertos_entry,
@@ -74,8 +74,11 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
 //        &th->id,
 //        core_id,
 //    );
+    TaskHandle_t Task1;
+    TaskHandle_t Task2;
+
     xTaskCreatePinnedToCore(task1code, "Task1", 10000, NULL, 1, &Task1, 1);
-    xTaskCreatePinnedToCore(task2code, "Task2", 10000, NULL, 1, &Task1, 0);
+    xTaskCreatePinnedToCore(task2code, "Task2", 10000, NULL, 1, &Task2, 0);
 
     return mp_const_none;
 }
