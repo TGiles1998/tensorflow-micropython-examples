@@ -21,13 +21,13 @@ STATIC mp_obj_t example_add_ints(mp_obj_t a_obj, mp_obj_t b_obj) {
 }
 void task1code( void * pvParameters ) {
     for(;;){
-        mp_printf(MICROPY_ERROR_PRINTER, "Task1code is cool core 1");
+        mp_printf(MICROPY_ERROR_PRINTER, "Task1code is cool core 1 \n");
         vTaskDelay(500 / 10);
     }
 }
 void task2code( void * pvParameters ) {
     for(;;){
-        mp_printf(MICROPY_ERROR_PRINTER, "Task2code is cool core 0");
+        mp_printf(MICROPY_ERROR_PRINTER, "Task2code is cool core 0 \n");
         vTaskDelay(700 / 10);
     }
 }
