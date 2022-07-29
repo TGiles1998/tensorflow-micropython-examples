@@ -1,5 +1,9 @@
 // Include MicroPython API.
+#include <string.h>
+// Include MicroPython API.
 #include "py/runtime.h"
+#include "py/stackctrl.h"
+#include "py/nlr.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
