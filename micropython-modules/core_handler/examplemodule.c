@@ -74,8 +74,8 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
 //        &th->id,
 //        core_id,
 //    );
-    n_args;
-    args;
+//    mp_printf(MICROPY_ERROR_PRINTER, n_args);
+//    mp_printf(MICROPY_ERROR_PRINTER, args);
 
     TaskHandle_t Task1;
     TaskHandle_t Task2;
