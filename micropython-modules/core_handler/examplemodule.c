@@ -49,7 +49,7 @@ typedef struct _core_thread_entry_args_t {
 } core_thread_entry_args_t;
 
 void run_function(core_thread_entry_args_t* args) {
-    mp_call_function_n_kw(args->fun, args->n_args, args->n_kw, args->args)
+    mp_call_function_n_kw(args->fun, args->n_args, args->n_kw, args->args);
 //    nlr_buf_t nlr;
 //    if (nlr_push(&nlr) == 0) {
 //        ;
