@@ -48,7 +48,9 @@ typedef struct _core_thread_entry_args_t {
     mp_obj_t args[];
 } core_thread_entry_args_t;
 
-STATIC void run_function(void *args) {
+STATIC void run_function(void *th_args) {
+    core_thread_entry_args_t *args = (core_thread_entry_args_t *)th_args;
+
     mp_call_function_n_kw(args->fun, args->n_args, args->n_kw, args->args);
 //    nlr_buf_t nlr;
 //    if (nlr_push(&nlr) == 0) {
@@ -96,10 +98,8 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
 
     TaskHandle_t Task1;
 
-    core_thread_entry_args_t *in_args = (core_thread_entry_args_t *)th_args;
-
     mp_printf(MICROPY_ERROR_PRINTER, "\n Starting task \n");
-    xTaskCreatePinnedToCore(run_function, name, stack_size, in_args, priority, &Task1, core_id);
+    xTaskCreatePinnedToCore(run_function, name, stack_size, th_args, priority, &Task1, core_id);
 //    xTaskCreatePinnedToCore(task2code, "Task2", 10000, NULL, 1, &Task2, 0);
 
     return mp_const_none;
