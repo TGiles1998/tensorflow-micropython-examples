@@ -48,7 +48,7 @@ typedef struct _core_thread_entry_args_t {
     mp_obj_t args[];
 } core_thread_entry_args_t;
 
-STATIC void run_function(void *th_args) {
+STATIC void run_function(void *args) {
     mp_printf(MICROPY_ERROR_PRINTER, "run_function");
 //    core_thread_entry_args_t *args = (core_thread_entry_args_t *)th_args;
     mp_printf(MICROPY_ERROR_PRINTER, "args");
