@@ -124,7 +124,7 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
     mp_printf(MICROPY_ERROR_PRINTER, "\n Starting task \n");
 //    xTaskCreatePinnedToCore(run_function, name, stack_size, th_args, priority, &Task1, core_id);
     xTaskCreatePinnedToCore(run_function, "Task0", 10000, th_args0, 1, &Task0, 0);
-    xTaskCreatePinnedToCore(task2code, "Task1", 10000, th_args1, 1, &Task1, 1);
+    xTaskCreatePinnedToCore(run_function, "Task1", 10000, th_args1, 1, &Task1, 1);
 
     return mp_const_none;
 }
