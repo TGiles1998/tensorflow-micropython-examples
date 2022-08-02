@@ -19,12 +19,6 @@ set(SDKCONFIG ${CMAKE_BINARY_DIR}/sdkconfig)
 #    PRIV_REQUIRES wpa_supplicant
 #    (... rest of the arguments, more requirements ...)
 #)
-idf_component_register(
-        SRCS
-        "enterprise.c"
-        PRIV_REQUIRES wpa_supplicant
-        INCLUDE_DIRS "")
-
 
 # Include board config; this is expected to set SDKCONFIG_DEFAULTS (among other options).
 include(${MICROPY_BOARD_DIR}/mpconfigboard.cmake)
