@@ -1,7 +1,7 @@
 // Include MicroPython API.
 #include <string.h>
 #include "esp_wifi.h"
-#include "components/wpa_supplicant/esp_supplicant/include/esp_wpa2.h"
+#include "wpa_supplicant/esp_supplicant/include/esp_wpa2.h"
 #include "py/obj.h"
 #include "py/runtime.h"
 #include "py/objstr.h"
