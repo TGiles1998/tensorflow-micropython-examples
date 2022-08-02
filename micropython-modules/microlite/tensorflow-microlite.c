@@ -384,7 +384,7 @@ STATIC mp_obj_t interpreter_get_output_tensor(mp_obj_t self_in, mp_obj_t index_o
 
 MP_DEFINE_CONST_FUN_OBJ_2(microlite_interpreter_get_output_tensor, interpreter_get_output_tensor);
 
-STATIC mp_obj_t interpreter_invoke(mp_obj_t self_in) {
+STATIC mp_obj_t interpreter_invoke(mp_obj_t self_in) {//, m_obj_t arg2
     microlite_interpreter_obj_t *self = MP_OBJ_TO_PTR(self_in);
 
     
@@ -396,6 +396,7 @@ STATIC mp_obj_t interpreter_invoke(mp_obj_t self_in) {
 
 }
 
+//MP_DEFINE_CONST_FUN_OBJ_2(microlite_interpreter_invoke, interpreter_invoke);
 MP_DEFINE_CONST_FUN_OBJ_1(microlite_interpreter_invoke, interpreter_invoke);
 
 
