@@ -161,7 +161,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_2(enterprise_connect_obj, enterprise_connect);
 // optimized to word-sized integers by the build system (interned strings).
 STATIC const mp_rom_map_elem_t example_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_enterprise) },
-    { MP_ROM_QSTR(MP_QSTR_encrypt_key), MP_ROM_PTR(&enterprise_connect_obj) },
+    { MP_ROM_QSTR(MP_QSTR_set_username_pass), MP_ROM_PTR(&enterprise_connect_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(example_module_globals, example_module_globals_table);
