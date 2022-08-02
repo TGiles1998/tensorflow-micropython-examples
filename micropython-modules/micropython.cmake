@@ -39,7 +39,7 @@
 #include(${CMAKE_CURRENT_LIST_DIR}/cexample/micropython.cmake)
 
 # Core handler
-#include(${CMAKE_CURRENT_LIST_DIR}/core_handler/micropython.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/core_handler/micropython.cmake)
 
 
 # Core handler
