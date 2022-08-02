@@ -66,44 +66,65 @@ STATIC mp_obj_t mod_core_function(size_t n_args, const mp_obj_t *args) {
     // We copy all arguments into this structure to keep ownership of them.
     // We must be very careful about root pointers because this pointer may
     // disappear from our address space before the thread is created.
-    core_thread_entry_args_t *th_args;
+    core_thread_entry_args_t *th_args0;
+    core_thread_entry_args_t *th_args1;
+
 
     // get positional arguments
-    size_t pos_args_len;
-    mp_obj_t *pos_args_items;
-    mp_obj_get_array(args[1], &pos_args_len, &pos_args_items);
+    size_t pos_args_len0;
+    mp_obj_t *pos_args_items0;
+    mp_obj_get_array(args[1], &pos_args_len0, &pos_args_items0);
+
+    size_t pos_args_len1;
+    mp_obj_t *pos_args_items1;
+    mp_obj_get_array(args[3], &pos_args_len1, &pos_args_items1);
+
 
     // just position arguments
-    th_args = m_new_obj_var(core_thread_entry_args_t, mp_obj_t, pos_args_len);
-    th_args->n_kw = 0;
+    th_args0 = m_new_obj_var(core_thread_entry_args_t, mp_obj_t, pos_args_len0);
+    th_args0->n_kw = 0;
+
+    th_args1 = m_new_obj_var(core_thread_entry_args_t, mp_obj_t, pos_args_len1);
+    th_args1->n_kw = 0;
+
 
     // copy across the positional arguments
-    th_args->n_args = pos_args_len;
-    memcpy(th_args->args, pos_args_items, pos_args_len * sizeof(mp_obj_t));
+    th_args0->n_args = pos_args_len0;
+    memcpy(th_args0->args, pos_args_items0, pos_args_len0 * sizeof(mp_obj_t));
+
+    th_args1->n_args = pos_args_len1;
+    memcpy(th_args1->args, pos_args_items1, pos_args_len1 * sizeof(mp_obj_t));
+
 
     // pass our locals and globals into the new thread
-    th_args->dict_locals = mp_locals_get();
-    th_args->dict_globals = mp_globals_get();
+    th_args0->dict_locals = mp_locals_get();
+    th_args0->dict_globals = mp_globals_get();
+
+    th_args1->dict_locals = mp_locals_get();
+    th_args1->dict_globals = mp_globals_get();
 
     // set the function for thread entry
-    th_args->fun = args[0];
+    th_args0->fun = args[0];
+    th_args1->fun = args[2];
 
     // Gets the core id
-    const char* name = mp_obj_get_type_str(args[2]); //Task1
-    mp_printf(MICROPY_ERROR_PRINTER, "\n Task1code is cool core 1 \n");
-    int stack_size = mp_obj_get_int(args[3]);  // 10000
-    int priority = mp_obj_get_int(args[4]);  // 1
-    int core_id = mp_obj_get_int(args[5]);  // 1
+//    const char* name = mp_obj_get_type_str(args[2]); //Task1
+    mp_printf(MICROPY_ERROR_PRINTER, "\n Gotten Stuff innit \n");
+//    int stack_size = mp_obj_get_int(args[3]);  // 10000
+//    int priority = mp_obj_get_int(args[4]);  // 1
+//    int core_id = mp_obj_get_int(args[5]);  // 1
 
     // set the stack size to use
-    th_args->stack_size = stack_size;
+//    th_args0->stack_size = stack_size;
+//    th_args1->stack_size = stack_size;
 
+    TaskHandle_t Task0;
     TaskHandle_t Task1;
 
     mp_printf(MICROPY_ERROR_PRINTER, "\n Starting task \n");
 //    xTaskCreatePinnedToCore(run_function, name, stack_size, th_args, priority, &Task1, core_id);
-    xTaskCreatePinnedToCore(run_function, "Task2", 10000, th_args, 1, &Task1, 0);
-//    xTaskCreatePinnedToCore(task2code, "Task2", 10000, NULL, 1, &Task2, 0);
+    xTaskCreatePinnedToCore(run_function, "Task0", 10000, th_args0, 1, &Task0, 0);
+    xTaskCreatePinnedToCore(task2code, "Task1", 10000, th_args1, 1, &Task1, 1);
 
     return mp_const_none;
 }
