@@ -49,7 +49,9 @@ typedef struct _core_thread_entry_args_t {
 } core_thread_entry_args_t;
 
 STATIC void run_function(void *th_args) {
+    mp_printf(MICROPY_ERROR_PRINTER, "\n Within run_function \n");
     core_thread_entry_args_t *args = (core_thread_entry_args_t *)th_args;
+    mp_printf(MICROPY_ERROR_PRINTER, "\n core_thread_entry_args_t *args = (core_thread_entry_args_t *)th_args; \n");
 
     mp_call_function_n_kw(args->fun, args->n_args, args->n_kw, args->args);
 //    nlr_buf_t nlr;
