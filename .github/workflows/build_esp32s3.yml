@@ -71,6 +71,8 @@ jobs:
           cd ./micropython
           echo "make -C mpy-cross V=1 clean all"
           make -C mpy-cross V=1 clean all
+          cd .ports/esp32/
+          make BOARD=GENERIC_S3_SPIRAM submodules
       - name: Build ESP32 S3 psram support and 8MB Flash firmware - OCTAL SPIRAM
         run: |
           source ./esp-idf/export.sh
