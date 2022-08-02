@@ -131,4 +131,5 @@ const mp_obj_module_t core_handler = {
 };
 
 // Register the module to make it available in Python.
-MP_REGISTER_MODULE(MP_QSTR_core_handler, core_handler, 1);
+//MP_REGISTER_MODULE(MP_QSTR_core_handler, core_handler, 1);
+MP_REGISTER_MODULE(MP_QSTR_core_handler, core_handler);
