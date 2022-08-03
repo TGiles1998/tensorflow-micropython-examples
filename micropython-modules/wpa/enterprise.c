@@ -84,16 +84,24 @@ STATIC mp_obj_t mod_wpa2enterprise_connect (mp_uint_t n_args, const mp_obj_t *ar
     ESP_ERROR_CHECK( esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL) );
     ESP_ERROR_CHECK( esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL) );
     ESP_ERROR_CHECK( esp_wifi_set_storage(WIFI_STORAGE_RAM) );
-    wifi_config_t wifi_config = {
-            .sta = {
-                    .ssid = aSsid,
-    #if defined (CONFIG_EXAMPLE_WPA3_192BIT_ENTERPRISE)
-                    .pmf_cfg = {
-                    .required = true
-                },
-    #endif
-            },
-    };
+
+    wifi_config_t wifi_config = {0};
+    mp_printf(MICROPY_ERROR_PRINTER, "\n wifi_config \n");
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wstringop-truncation"
+    strncpy((char*) wifi_config.sta.ssid, aSsid, 32);
+//    wifi_config_t wifi_config = {
+//            .sta = {
+//                    .ssid = *aSsid,
+//    #if defined (CONFIG_EXAMPLE_WPA3_192BIT_ENTERPRISE)
+//                    .pmf_cfg = {
+//                    .required = true
+//                },
+//    #endif
+//            },
+//    };
+    mp_printf(MICROPY_ERROR_PRINTER, wifi_config.sta.ssid);
+
     ESP_LOGI(TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
     ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
     ESP_ERROR_CHECK( esp_wifi_set_config(WIFI_IF_STA, &wifi_config) );
