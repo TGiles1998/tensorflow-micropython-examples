@@ -168,7 +168,7 @@ STATIC mp_obj_t esp_seteap(mp_obj_t username, mp_obj_t password){// mp_obj_t sel
 
 
     esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)EAP_IDENTITY, strlen(EAP_IDENTITY));
-    mp_printf(MICROPY, "\n esp_wifi_sta_wpa2_ent_set_identity \n");
+    mp_printf(MICROPY_ERROR_PRINTER, "\n esp_wifi_sta_wpa2_ent_set_identity \n");
     esp_wifi_sta_wpa2_ent_set_username((uint8_t *)EAP_IDENTITY, strlen(EAP_IDENTITY));
     mp_printf(MICROPY_ERROR_PRINTER, "\n esp_wifi_sta_wpa2_ent_set_username \n");
     //esp_wifi_sta_wpa2_ent_set_new_password((uint8_t *)EAP_PASSWORD, strlen(EAP_PASSWORD));
