@@ -36,13 +36,7 @@ STATIC mp_obj_t mod_wpa2enterprise_connect (mp_uint_t n_args, const mp_obj_t *ar
     mp_printf(MICROPY_ERROR_PRINTER, aPassword);
     int phase2 = mp_obj_get_int(args[4]);
 
-    #define EXAMPLE_WIFI_SSID CONFIG_EXAMPLE_WIFI_SSID
-    #define EXAMPLE_EAP_METHOD CONFIG_EXAMPLE_EAP_METHOD
-
-    #define EXAMPLE_EAP_ID CONFIG_EXAMPLE_EAP_ID
-    #define EXAMPLE_EAP_USERNAME CONFIG_EXAMPLE_EAP_USERNAME
-    #define EXAMPLE_EAP_PASSWORD CONFIG_EXAMPLE_EAP_PASSWORD
-
+//    #define EXAMPLE_EAP_METHOD CONFIG_EXAMPLE_EAP_METHOD
 
 //    #ifdef CONFIG_EXAMPLE_VALIDATE_SERVER_CERT
 //    unsigned int ca_pem_bytes = ca_pem_end - ca_pem_start;
@@ -66,7 +60,7 @@ STATIC mp_obj_t mod_wpa2enterprise_connect (mp_uint_t n_args, const mp_obj_t *ar
     ESP_ERROR_CHECK( esp_wifi_set_storage(WIFI_STORAGE_RAM) );
     wifi_config_t wifi_config = {
             .sta = {
-                    .ssid = EXAMPLE_WIFI_SSID,
+                    .ssid = aSsid,
     #if defined (CONFIG_EXAMPLE_WPA3_192BIT_ENTERPRISE)
                     .pmf_cfg = {
                     .required = true
@@ -77,7 +71,7 @@ STATIC mp_obj_t mod_wpa2enterprise_connect (mp_uint_t n_args, const mp_obj_t *ar
     ESP_LOGI(TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
     ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
     ESP_ERROR_CHECK( esp_wifi_set_config(WIFI_IF_STA, &wifi_config) );
-    ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)EXAMPLE_EAP_ID, strlen(EXAMPLE_EAP_ID)) );
+    ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)aIdent, strlen(aIdent)) );
 
     #if defined(CONFIG_EXAMPLE_VALIDATE_SERVER_CERT) || \
         defined(CONFIG_EXAMPLE_WPA3_ENTERPRISE) || \
@@ -91,8 +85,8 @@ STATIC mp_obj_t mod_wpa2enterprise_connect (mp_uint_t n_args, const mp_obj_t *ar
     #endif /* CONFIG_EXAMPLE_EAP_METHOD_TLS */
 
     #if defined CONFIG_EXAMPLE_EAP_METHOD_PEAP || CONFIG_EXAMPLE_EAP_METHOD_TTLS
-    ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_username((uint8_t *)EXAMPLE_EAP_USERNAME, strlen(EXAMPLE_EAP_USERNAME)) );
-        ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_password((uint8_t *)EXAMPLE_EAP_PASSWORD, strlen(EXAMPLE_EAP_PASSWORD)) );
+    ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_username((uint8_t *)aAnonIdent, strlen(aAnonIdent)) );
+        ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_password((uint8_t *)aPassword, strlen(aPassword)) );
     #endif /* CONFIG_EXAMPLE_EAP_METHOD_PEAP || CONFIG_EXAMPLE_EAP_METHOD_TTLS */
 
     #if defined CONFIG_EXAMPLE_EAP_METHOD_TTLS
