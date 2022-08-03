@@ -179,7 +179,7 @@ STATIC mp_obj_t esp_seteap(mp_obj_t username, mp_obj_t password){// mp_obj_t sel
     return mp_const_none;
 }
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(esp_seteap_obj, esp_seteap);
+STATIC MP_DEFINE_CONST_FUN_OBJ_2(esp_seteap_obj, esp_seteap);
 
 
 // Define all properties of the module.
