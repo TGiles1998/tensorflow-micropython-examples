@@ -119,40 +119,68 @@
 
 
 //Set up EAP
-STATIC mp_obj_t enterprise_connect(mp_obj_t username, mp_obj_t password) { // mp_obj_t self_in,
+//STATIC mp_obj_t enterprise_connect(mp_obj_t username, mp_obj_t password) { // mp_obj_t self_in,
+//    size_t Ilen;
+//    size_t Plen;
+//    const char *EAP_IDENTITY = mp_obj_str_get_data(username, &Ilen);
+//    const char *EAP_PASSWORD = mp_obj_str_get_data(password, &Plen);
+//
+//    printf(EAP_IDENTITY);
+//    printf(EAP_PASSWORD);
+//
+//    // Initialise wifi mode
+////    WiFi.mode(WIFI_STA);
+//
+////    esp_exceptions();
+//    esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)EAP_IDENTITY, strlen(EAP_IDENTITY));
+//
+////    esp_exceptions();
+//    esp_wifi_sta_wpa2_ent_set_username((uint8_t *)EAP_IDENTITY, strlen(EAP_IDENTITY));
+//
+//    //esp_exceptions(esp_wifi_sta_wpa2_ent_set_new_password((uint8_t *)EAP_PASSWORD, strlen(EAP_PASSWORD)));
+//
+////    esp_exceptions();
+//    esp_wifi_sta_wpa2_ent_set_password((uint8_t *)EAP_PASSWORD, strlen(EAP_PASSWORD));
+//
+//    // Set wpa2 wifi configuration to default settings
+////    esp_wpa2_config_t config = WPA2_CONFIG_INIT_DEFAULT();
+//
+//    // Set configuration settings to enable function
+////    esp_exceptions();
+//    esp_wifi_sta_wpa2_ent_enable();//&config
+//
+//    return mp_const_none;
+//}
+//
+//STATIC MP_DEFINE_CONST_FUN_OBJ_2(enterprise_connect_obj, enterprise_connect);
+
+
+//then add...
+//Set up EAP
+STATIC mp_obj_t esp_seteap(mp_obj_t username, mp_obj_t password){// mp_obj_t self_in,
+    mp_printf(MICROPY_ERROR_PRINTER, "\n esp_seteap \n");
     size_t Ilen;
     size_t Plen;
     const char *EAP_IDENTITY = mp_obj_str_get_data(username, &Ilen);
     const char *EAP_PASSWORD = mp_obj_str_get_data(password, &Plen);
+    mp_printf(MICROPY_ERROR_PRINTER, EAP_IDENTITY);
+    mp_printf(MICROPY_ERROR_PRINTER, EAP_PASSWORD);
 
-    printf(EAP_IDENTITY);
-    printf(EAP_PASSWORD);
 
-    // Initialise wifi mode
-//    WiFi.mode(WIFI_STA);
-
-//    esp_exceptions();
     esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)EAP_IDENTITY, strlen(EAP_IDENTITY));
-
-//    esp_exceptions();
+    mp_printf(MICROPY, "\n esp_wifi_sta_wpa2_ent_set_identity \n");
     esp_wifi_sta_wpa2_ent_set_username((uint8_t *)EAP_IDENTITY, strlen(EAP_IDENTITY));
-
-    //esp_exceptions(esp_wifi_sta_wpa2_ent_set_new_password((uint8_t *)EAP_PASSWORD, strlen(EAP_PASSWORD)));
-
-//    esp_exceptions();
+    mp_printf(MICROPY_ERROR_PRINTER, "\n esp_wifi_sta_wpa2_ent_set_username \n");
+    //esp_wifi_sta_wpa2_ent_set_new_password((uint8_t *)EAP_PASSWORD, strlen(EAP_PASSWORD));
     esp_wifi_sta_wpa2_ent_set_password((uint8_t *)EAP_PASSWORD, strlen(EAP_PASSWORD));
-
-    // Set wpa2 wifi configuration to default settings
-//    esp_wpa2_config_t config = WPA2_CONFIG_INIT_DEFAULT();
-
-    // Set configuration settings to enable function
-//    esp_exceptions();
-    esp_wifi_sta_wpa2_ent_enable();//&config
-
+    mp_printf(MICROPY_ERROR_PRINTER, "\n esp_wifi_sta_wpa2_ent_set_password \n");
+    esp_wifi_sta_wpa2_ent_enable();
+    mp_printf(MICROPY_ERROR_PRINTER, "\n esp_wifi_sta_wpa2_ent_enable \n");
     return mp_const_none;
 }
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(enterprise_connect_obj, enterprise_connect);
+STATIC MP_DEFINE_CONST_FUN_OBJ_3(esp_seteap_obj, esp_seteap);
+
 
 // Define all properties of the module.
 // Table entries are key/value pairs of the attribute name (a string)
@@ -161,7 +189,8 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_2(enterprise_connect_obj, enterprise_connect);
 // optimized to word-sized integers by the build system (interned strings).
 STATIC const mp_rom_map_elem_t example_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_enterprise) },
-    { MP_ROM_QSTR(MP_QSTR_set_username_pass), MP_ROM_PTR(&enterprise_connect_obj) },
+//    { MP_ROM_QSTR(MP_QSTR_set_username_pass), MP_ROM_PTR(&enterprise_connect_obj) },
+    { MP_ROM_QSTR(MP_QSTR_seteap), MP_ROM_PTR(&esp_seteap_obj) },
 };
 
 STATIC MP_DEFINE_CONST_DICT(example_module_globals, example_module_globals_table);
