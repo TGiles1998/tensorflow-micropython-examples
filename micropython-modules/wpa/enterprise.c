@@ -16,13 +16,13 @@ esp_err_t driver_wpa2enterprise_init() { return ESP_OK; }
 
 //------------------------------------------------------------------------
 STATIC mp_obj_t mod_wpa2enterprise_connect (mp_uint_t n_args, const mp_obj_t *args) {
-    const char* aSsid = mp_obj_str_get_str(args[0]);
-    const char* aAnonIdent = mp_obj_str_get_str(args[1]);
-    const char* aIdent = mp_obj_str_get_str(args[2]);
-    const char* aPassword = mp_obj_str_get_str(args[3]);
-    int phase2 = mp_obj_get_int(args[4]);
+    const char* aSsid = mp_obj_str_get_str(args[0]); // SSID
+    const char* aAnonIdent = mp_obj_str_get_str(args[1]); // Anonoymous identidity
+    const char* aIdent = mp_obj_str_get_str(args[2]); // Identity
+    const char* aPassword = mp_obj_str_get_str(args[3]); // Password
+    int phase2 = mp_obj_get_int(args[4]); // Phase 2 Use value 1 for ESP_EAP_TTLS_PHASE2_MSCHAPV2strncpy
     wifi_config_t wifi_config = {0};
-    strncpy((char*) wifi_config.sta.ssid, aSsid, 32);
+    strncpy((char*) wifi_config.sta.ssid, aSsid); // , 32
     WIFI_SORT_ERRCHECK(esp_wifi_stop());
     WIFI_SORT_ERRCHECK(esp_wifi_set_mode(WIFI_MODE_STA) );
     WIFI_SORT_ERRCHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config) );
@@ -38,6 +38,26 @@ STATIC mp_obj_t mod_wpa2enterprise_connect (mp_uint_t n_args, const mp_obj_t *ar
     // Start the connection.
     WIFI_SORT_ERRCHECK(esp_wifi_start());
     WIFI_SORT_ERRCHECK(esp_wifi_connect());
+
+    //  switch (type) {
+//        case ESP_EAP_TTLS_PHASE2_EAP:
+//            g_wpa_ttls_phase2_type = "auth=EAP";
+//            break;
+//        case ESP_EAP_TTLS_PHASE2_MSCHAPV2:
+//            g_wpa_ttls_phase2_type = "auth=MSCHAPV2";
+//            break;
+//        case ESP_EAP_TTLS_PHASE2_MSCHAP:
+//            g_wpa_ttls_phase2_type = "auth=MSCHAP";
+//            break;
+//        case ESP_EAP_TTLS_PHASE2_PAP:
+//            g_wpa_ttls_phase2_type = "auth=PAP";
+//            break;
+//        case ESP_EAP_TTLS_PHASE2_CHAP:
+//            g_wpa_ttls_phase2_type = "auth=CHAP";
+//            break;
+//        default:
+//            g_wpa_ttls_phase2_type = "auth=MSCHAPV2";
+//            break;
 
     return mp_const_none;
 }
