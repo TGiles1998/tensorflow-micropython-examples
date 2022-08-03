@@ -105,7 +105,7 @@ STATIC mp_obj_t mod_wpa2enterprise_connect (mp_uint_t n_args, const mp_obj_t *ar
 
 //    ESP_ERROR_CHECK( mp_print_str(MICROPY_ERROR_PRINTER, wifi_config.sta.ssid) );
     mp_printf(MICROPY_ERROR_PRINTER, "\n Ok gonna try Setting WiFi configuration SSID\n");
-    ESP_ERROR_CHECK( mp_print_str(MICROPY_ERROR_PRINTER, *wifi_config.sta.ssid) );
+    ESP_ERROR_CHECK( mp_print_str(MICROPY_ERROR_PRINTER, wifi_config["sta"]["ssid"]) );
 //    ESP_LOGI(TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
     mp_printf(MICROPY_ERROR_PRINTER, "\n running esp_wifi_set_mode\n");
     ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
