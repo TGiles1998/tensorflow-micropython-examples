@@ -89,7 +89,9 @@ STATIC mp_obj_t mod_wpa2enterprise_connect (mp_uint_t n_args, const mp_obj_t *ar
     mp_printf(MICROPY_ERROR_PRINTER, "\n wifi_config \n");
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wstringop-truncation"
+    mp_printf(MICROPY_ERROR_PRINTER, "\n pragmad this ting \n");
     strncpy((char*) wifi_config.sta.ssid, aSsid, 32);
+    mp_printf(MICROPY_ERROR_PRINTER, "\n set strncpy \n");
 //    wifi_config_t wifi_config = {
 //            .sta = {
 //                    .ssid = *aSsid,
@@ -103,6 +105,7 @@ STATIC mp_obj_t mod_wpa2enterprise_connect (mp_uint_t n_args, const mp_obj_t *ar
 //    mp_printf(MICROPY_ERROR_PRINTER, wifi_config.sta.ssid);
 
 //    mp_printf(TAG, "Setting WiFi configuration SSID %s...", *wifi_config.sta.ssid);
+    mp_printf(MICROPY_ERROR_PRINTER, "\n Ok gonna try Setting WiFi configuration SSID\n");
     ESP_LOGI(TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
     ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
     ESP_ERROR_CHECK( esp_wifi_set_config(WIFI_IF_STA, &wifi_config) );
