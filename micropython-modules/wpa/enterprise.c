@@ -157,7 +157,7 @@
 
 //then add...
 //Set up EAP
-STATIC mp_obj_t esp_seteap(mp_obj_t username, mp_obj_t password){// mp_obj_t self_in,
+STATIC mp_obj_t enterprise_connect(mp_obj_t username, mp_obj_t password){// mp_obj_t self_in,
     mp_printf(MICROPY_ERROR_PRINTER, "\n esp_seteap \n");
     size_t Ilen;
     size_t Plen;
@@ -179,31 +179,20 @@ STATIC mp_obj_t esp_seteap(mp_obj_t username, mp_obj_t password){// mp_obj_t sel
     return mp_const_none;
 }
 
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(esp_seteap_obj, esp_seteap);
+STATIC MP_DEFINE_CONST_FUN_OBJ_2(enterprise_connect_obj, enterprise_connect);
 
 
-// Define all properties of the module.
-// Table entries are key/value pairs of the attribute name (a string)
-// and the MicroPython object reference.
-// All identifiers and strings are written as MP_QSTR_xxx and will be
-// optimized to word-sized integers by the build system (interned strings).
-STATIC const mp_rom_map_elem_t example_module_globals_table[] = {
+STATIC const mp_rom_map_elem_t enterprise_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_enterprise) },
-//    { MP_ROM_QSTR(MP_QSTR_set_username_pass), MP_ROM_PTR(&enterprise_connect_obj) },
-    { MP_ROM_QSTR(MP_QSTR_seteap), MP_ROM_PTR(&esp_seteap_obj) },
+    { MP_ROM_QSTR(MP_QSTR_set_username_pass), MP_ROM_PTR(&enterprise_connect_obj) },
 };
 
-STATIC MP_DEFINE_CONST_DICT(example_module_globals, example_module_globals_table);
+STATIC MP_DEFINE_CONST_DICT(enterprise_module_globals, enterprise_module_globals_table);
 
 // Define module object.
-const mp_obj_module_t example_user_cmodule = {
+const mp_obj_module_t enterprise_module = {
     .base = { &mp_type_module },
-    .globals = (mp_obj_dict_t *)&example_module_globals,
+    .globals = (mp_obj_dict_t *)&enterprise_module_globals,
 };
 
-// Register the module to make it available in Python.
-// Note: the "1" in the third argument means this module is always enabled.
-// This "1" can be optionally replaced with a macro like MODULE_enterprise_ENABLED
-// which can then be used to conditionally enable this module.
-//MP_REGISTER_MODULE(MP_QSTR_enterprise, example_user_cmodule, 1);
-MP_REGISTER_MODULE(MP_QSTR_enterprise, example_user_cmodule);
+MP_REGISTER_MODULE(MP_QSTR_enterprise, enterprise_module);
