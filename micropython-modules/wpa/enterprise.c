@@ -221,7 +221,7 @@ STATIC mp_obj_t enterprise_connect(mp_obj_t username, mp_obj_t password){// mp_o
     //esp_wifi_sta_wpa2_ent_set_new_password((uint8_t *)EAP_PASSWORD, strlen(EAP_PASSWORD));
     my_esp_exceptions_helper(esp_wifi_sta_wpa2_ent_set_password((uint8_t *)EAP_PASSWORD, strlen(EAP_PASSWORD)));
     mp_printf(MICROPY_ERROR_PRINTER, "\n esp_wifi_sta_wpa2_ent_set_password \n");
-    my_esp_exceptions_helper(esp_wifi_sta_wpa2_ent_enable()));
+    my_esp_exceptions_helper(esp_wifi_sta_wpa2_ent_enable());
     mp_printf(MICROPY_ERROR_PRINTER, "\n esp_wifi_sta_wpa2_ent_enable \n");
     return mp_const_none;
 }
