@@ -106,39 +106,53 @@ STATIC mp_obj_t mod_wpa2enterprise_connect (mp_uint_t n_args, const mp_obj_t *ar
 
 //    mp_printf(TAG, "Setting WiFi configuration SSID %s...", *wifi_config.sta.ssid);
     mp_printf(MICROPY_ERROR_PRINTER, "\n Ok gonna try Setting WiFi configuration SSID\n");
-    ESP_LOGI(TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
+    mp_printf(MICROPY_ERROR_PRINTER, *wifi_config.sta.ssid);
+//    ESP_LOGI(TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
+    mp_printf(MICROPY_ERROR_PRINTER, "\n running esp_wifi_set_mode\n");
     ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
+    mp_printf(MICROPY_ERROR_PRINTER, "\n ran esp_wifi_set_mode\n");
+
     ESP_ERROR_CHECK( esp_wifi_set_config(WIFI_IF_STA, &wifi_config) );
+    mp_printf(MICROPY_ERROR_PRINTER, "\n ran esp_wifi_set_config\n");
     ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)aIdent, strlen(aIdent)) );
+    mp_printf(MICROPY_ERROR_PRINTER, "\n ran esp_wifi_sta_wpa2_ent_set_identity\n");
 
     #if defined(CONFIG_EXAMPLE_VALIDATE_SERVER_CERT) || \
         defined(CONFIG_EXAMPLE_WPA3_ENTERPRISE) || \
         defined(CONFIG_EXAMPLE_WPA3_192BIT_ENTERPRISE)
     ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_ca_cert(ca_pem_start, ca_pem_bytes) );
+    mp_printf(MICROPY_ERROR_PRINTER, "\n ran esp_wifi_sta_wpa2_ent_set_ca_cert\n");
     #endif /* CONFIG_EXAMPLE_VALIDATE_SERVER_CERT */ /* EXAMPLE_WPA3_ENTERPRISE */
 
     #ifdef CONFIG_EXAMPLE_EAP_METHOD_TLS
     ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_cert_key(client_crt_start, client_crt_bytes,\
                 client_key_start, client_key_bytes, NULL, 0) );
+    mp_printf(MICROPY_ERROR_PRINTER, "\n ran esp_wifi_sta_wpa2_ent_set_cert_key\n");
     #endif /* CONFIG_EXAMPLE_EAP_METHOD_TLS */
 
     #if defined CONFIG_EXAMPLE_EAP_METHOD_PEAP || CONFIG_EXAMPLE_EAP_METHOD_TTLS
     ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_username((uint8_t *)aAnonIdent, strlen(aAnonIdent)) );
         ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_password((uint8_t *)aPassword, strlen(aPassword)) );
+        mp_printf(MICROPY_ERROR_PRINTER, "\n ran esp_wifi_sta_wpa2_ent_set_password\n");
     #endif /* CONFIG_EXAMPLE_EAP_METHOD_PEAP || CONFIG_EXAMPLE_EAP_METHOD_TTLS */
 
     #if defined CONFIG_EXAMPLE_EAP_METHOD_TTLS
     ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_ttls_phase2_method(TTLS_PHASE2_METHOD) );
+    mp_printf(MICROPY_ERROR_PRINTER, "\n ran esp_wifi_sta_wpa2_ent_set_ttls_phase2_method\n");
     #endif /* CONFIG_EXAMPLE_EAP_METHOD_TTLS */
     #if defined (CONFIG_EXAMPLE_WPA3_192BIT_ENTERPRISE)
     ESP_LOGI(TAG, "Enabling 192 bit certification");
         ESP_ERROR_CHECK(esp_wifi_sta_wpa2_set_suiteb_192bit_certification(true));
+        mp_printf(MICROPY_ERROR_PRINTER, "\n ran esp_wifi_sta_wpa2_set_suiteb_192bit_certification\n");
     #endif
     #ifdef CONFIG_EXAMPLE_USE_DEFAULT_CERT_BUNDLE
     ESP_ERROR_CHECK(esp_wifi_sta_wpa2_use_default_cert_bundle(true));
+    mp_printf(MICROPY_ERROR_PRINTER, "\n ran esp_wifi_sta_wpa2_use_default_cert_bundle\n");
     #endif
     ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_enable() );
+    mp_printf(MICROPY_ERROR_PRINTER, "\n ran esp_wifi_sta_wpa2_ent_enable\n");
     ESP_ERROR_CHECK( esp_wifi_start() );
+    mp_printf(MICROPY_ERROR_PRINTER, "\n ran esp_wifi_start\n");
     return mp_const_none;
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(mod_wpa2enterprise_connect_obj, 5, 5, mod_wpa2enterprise_connect);
