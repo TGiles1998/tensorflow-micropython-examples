@@ -5,6 +5,9 @@
 #include "py/obj.h"
 #include "py/runtime.h"
 #include "py/objstr.h"
+#include "py/mperrno.h"
+#include "esp_wifi.h"
+#include "esp_log.h"
 
 // This is the function which will be called from Python as enterprise.encrypt_key(a, b).
 //STATIC mp_obj_t enterprise_connect(const mp_obj_t ssid, const mp_obj_t username, const mp_obj_t identity, const mp_obj_t password) {
@@ -154,6 +157,50 @@
 //
 //STATIC MP_DEFINE_CONST_FUN_OBJ_2(enterprise_connect_obj, enterprise_connect);
 
+NORETURN void my_esp_exceptions_helper(esp_err_t e) {
+    switch (e) {
+        case ESP_ERR_WIFI_NOT_INIT:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Not Initialized"));
+        case ESP_ERR_WIFI_NOT_STARTED:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Not Started"));
+        case ESP_ERR_WIFI_NOT_STOPPED:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Not Stopped"));
+        case ESP_ERR_WIFI_IF:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Invalid Interface"));
+        case ESP_ERR_WIFI_MODE:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Invalid Mode"));
+        case ESP_ERR_WIFI_STATE:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Internal State Error"));
+        case ESP_ERR_WIFI_CONN:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Internal Error"));
+        case ESP_ERR_WIFI_NVS:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Internal NVS Error"));
+        case ESP_ERR_WIFI_MAC:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Invalid MAC Address"));
+        case ESP_ERR_WIFI_SSID:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi SSID Invalid"));
+        case ESP_ERR_WIFI_PASSWORD:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Invalid Password"));
+        case ESP_ERR_WIFI_TIMEOUT:
+            mp_raise_OSError(MP_ETIMEDOUT);
+        case ESP_ERR_WIFI_WAKE_FAIL:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Wakeup Failure"));
+        case ESP_ERR_WIFI_WOULD_BLOCK:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Would Block"));
+        case ESP_ERR_WIFI_NOT_CONNECT:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("Wifi Not Connected"));
+        case ESP_ERR_TCPIP_ADAPTER_INVALID_PARAMS:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("TCP/IP Invalid Parameters"));
+        case ESP_ERR_TCPIP_ADAPTER_IF_NOT_READY:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("TCP/IP IF Not Ready"));
+        case ESP_ERR_TCPIP_ADAPTER_DHCPC_START_FAILED:
+            mp_raise_msg(&mp_type_OSError, MP_ERROR_TEXT("TCP/IP DHCP Client Start Failed"));
+        case ESP_ERR_TCPIP_ADAPTER_NO_MEM:
+            mp_raise_OSError(MP_ENOMEM);
+        default:
+            mp_raise_msg_varg(&mp_type_RuntimeError, MP_ERROR_TEXT("Wifi Unknown Error 0x%04x"), e);
+    }
+}
 
 //then add...
 //Set up EAP
@@ -167,14 +214,14 @@ STATIC mp_obj_t enterprise_connect(mp_obj_t username, mp_obj_t password){// mp_o
     mp_printf(MICROPY_ERROR_PRINTER, EAP_PASSWORD);
 
 
-    esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)EAP_IDENTITY, strlen(EAP_IDENTITY));
+    my_esp_exceptions_helper(esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)EAP_IDENTITY, strlen(EAP_IDENTITY)));
     mp_printf(MICROPY_ERROR_PRINTER, "\n esp_wifi_sta_wpa2_ent_set_identity \n");
-    esp_wifi_sta_wpa2_ent_set_username((uint8_t *)EAP_IDENTITY, strlen(EAP_IDENTITY));
+    my_esp_exceptions_helper(esp_wifi_sta_wpa2_ent_set_username((uint8_t *)EAP_IDENTITY, strlen(EAP_IDENTITY)));
     mp_printf(MICROPY_ERROR_PRINTER, "\n esp_wifi_sta_wpa2_ent_set_username \n");
     //esp_wifi_sta_wpa2_ent_set_new_password((uint8_t *)EAP_PASSWORD, strlen(EAP_PASSWORD));
-    esp_wifi_sta_wpa2_ent_set_password((uint8_t *)EAP_PASSWORD, strlen(EAP_PASSWORD));
+    my_esp_exceptions_helper(esp_wifi_sta_wpa2_ent_set_password((uint8_t *)EAP_PASSWORD, strlen(EAP_PASSWORD)));
     mp_printf(MICROPY_ERROR_PRINTER, "\n esp_wifi_sta_wpa2_ent_set_password \n");
-    esp_wifi_sta_wpa2_ent_enable();
+    my_esp_exceptions_helper(esp_wifi_sta_wpa2_ent_enable()));
     mp_printf(MICROPY_ERROR_PRINTER, "\n esp_wifi_sta_wpa2_ent_enable \n");
     return mp_const_none;
 }
