@@ -24,10 +24,10 @@
 # THE SOFTWARE.
 #
 
-#include(${CMAKE_CURRENT_LIST_DIR}/microlite/micropython.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/microlite/micropython.cmake)
 
 # disabled.  will  be incorporated into microlite in #36
-# include(${CMAKE_CURRENT_LIST_DIR}/audio_frontend/micropython.cmake)
+#include(${CMAKE_CURRENT_LIST_DIR}/audio_frontend/micropython.cmake)
 
 #include(${CMAKE_CURRENT_LIST_DIR}/../micropython-ulab/code/micropython.cmake)
 
@@ -39,8 +39,8 @@
 #include(${CMAKE_CURRENT_LIST_DIR}/cexample/micropython.cmake)
 
 # Core handler
-include(${CMAKE_CURRENT_LIST_DIR}/core_handler/micropython.cmake)
+#include(${CMAKE_CURRENT_LIST_DIR}/core_handler/micropython.cmake)
 
 
 # Core handler
-include(${CMAKE_CURRENT_LIST_DIR}/wpa/micropython.cmake)
+#include(${CMAKE_CURRENT_LIST_DIR}/wpa/micropython.cmake)

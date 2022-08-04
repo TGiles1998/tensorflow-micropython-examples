@@ -384,20 +384,30 @@ STATIC mp_obj_t interpreter_get_output_tensor(mp_obj_t self_in, mp_obj_t index_o
 
 MP_DEFINE_CONST_FUN_OBJ_2(microlite_interpreter_get_output_tensor, interpreter_get_output_tensor);
 
-STATIC mp_obj_t interpreter_invoke(mp_obj_t self_in) {//, m_obj_t arg2
+STATIC mp_obj_t interpreter_invoke(mp_obj_t self_in, mp_obj_t core_obj) {//, m_obj_t arg2
     microlite_interpreter_obj_t *self = MP_OBJ_TO_PTR(self_in);
 
-    
-    int code = libtf_interpreter_invoke(self);
+    /// The core the interpreter will run on
+    int core = mp_obj_get_int(core_obj);
+
+    if (core == 0) {
+        TaskHandle_t Task0;
+        xTaskCreatePinnedToCore(libtf_interpreter_invoke, "Task0", 10000, self, 1, &Task0, 0)
+    }
+    else if (core == 1) {
+//        int code = libtf_interpreter_invoke(self);
+        TaskHandle_t Task1;
+        xTaskCreatePinnedToCore(libtf_interpreter_invoke, "Task1", 10000, self, 1, &Task1, 1);
+    }
 
     self->inference_count += 1;
 
-    return mp_obj_new_int(code);
+    return mp_const_none;//mp_obj_new_int(code);
 
 }
 
-//MP_DEFINE_CONST_FUN_OBJ_2(microlite_interpreter_invoke, interpreter_invoke);
-MP_DEFINE_CONST_FUN_OBJ_1(microlite_interpreter_invoke, interpreter_invoke);
+MP_DEFINE_CONST_FUN_OBJ_2(microlite_interpreter_invoke, interpreter_invoke);
+//MP_DEFINE_CONST_FUN_OBJ_1(microlite_interpreter_invoke, interpreter_invoke);
 
 
 
