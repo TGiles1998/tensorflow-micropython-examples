@@ -457,5 +457,6 @@ const mp_obj_module_t microlite_cmodule = {
 };
 
 // Register the module to make it available in Python.
-MP_REGISTER_MODULE(MP_QSTR_microlite, microlite_cmodule, MODULE_MICROLITE_ENABLED);
+//MP_REGISTER_MODULE(MP_QSTR_microlite, microlite_cmodule, MODULE_MICROLITE_ENABLED);
+MP_REGISTER_MODULE(MP_QSTR_microlite, microlite_cmodule);
 
