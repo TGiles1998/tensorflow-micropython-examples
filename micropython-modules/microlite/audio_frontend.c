@@ -56,15 +56,15 @@
 // frequency information. This has to be a power of two, and since we're dealing
 // with 30ms of 16KHz inputs, which means 480 samples, this is the next value.
 static const int kMaxAudioSampleSize = 512;
-static const int kAudioSampleFrequency = 16000;
+static const int kAudioSampleFrequency = 88200;
 
 // The following values are derived from values used during model training.
 // If you change the way you preprocess the input, update all these constants.
-static const int kFeatureSliceSize = 40;
-static const int kFeatureSliceCount = 49;
-static const int kFeatureElementCount =  40*49; // (kFeatureSliceSize * kFeatureSliceCount);
-static const int kFeatureSliceStrideMs = 20;
-static const int kFeatureSliceDurationMs = 30;
+static const int kFeatureSliceSize = 224;
+static const int kFeatureSliceCount = 224;
+static const int kFeatureElementCount =  224*224; // (kFeatureSliceSize * kFeatureSliceCount);
+//static const int kFeatureSliceDurationMs = 12;
+//static const int kFeatureSliceStrideMs = 5.076142131979695;
 
 
 mp_obj_t audio_frontend_configure (mp_obj_t self_in) {
@@ -79,12 +79,12 @@ microlite_audio_frontend_obj_t*self = MP_OBJ_TO_PTR(self_in);
 
   // the 3 variables pass through from the micro_speech micro_model_settings.h file imported above
   // this is temporary and we will make them pass through micropython as a next step.
-  self->config->window.size_ms = kFeatureSliceDurationMs;
-  self->config->window.step_size_ms = kFeatureSliceStrideMs;
+  self->config->window.size_ms = 11.609977324263039; // kFeatureSliceDurationMs;  512
+  self->config->window.step_size_ms = 8.934240362811791; //kFeatureSliceStrideMs;  394
   self->config->noise_reduction.smoothing_bits = 10;
   self->config->filterbank.num_channels = kFeatureSliceSize;
-  self->config->filterbank.lower_band_limit = 125.0;
-  self->config->filterbank.upper_band_limit = 7500.0;
+  self->config->filterbank.lower_band_limit = 300.0;
+  self->config->filterbank.upper_band_limit = 15000.0;
   self->config->noise_reduction.smoothing_bits = 10;
   self->config->noise_reduction.even_smoothing = 0.025;
   self->config->noise_reduction.odd_smoothing = 0.06;
