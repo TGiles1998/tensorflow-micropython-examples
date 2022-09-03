@@ -22,7 +22,7 @@ CONFIG_DEFAULT_PSRAM_CS_IO=26
 
 # Customizations from issue #40
 
-# not using the cpu settings as we are setting the cpu to max via
+# not using the cpu settings as we are setting the cpu to max via 
 # the standard config.
 # CONFIG_ESP32S3_DEFAULT_CPU_FREQ_80=
 # CONFIG_ESP32S3_DEFAULT_CPU_FREQ_160=y
@@ -90,7 +90,7 @@ CONFIG_SPIRAM_TRY_ALLOCATE_WIFI_LWIP=
 
 # end of SPI RAM config
 
-        CONFIG_ESP32S3_TRAX=
+CONFIG_ESP32S3_TRAX=
 CONFIG_ESP32S3_TRACEMEM_RESERVE_DRAM=0x0
 CONFIG_ESP32S3_ULP_COPROC_ENABLED=
 CONFIG_ESP32S3_ULP_COPROC_RESERVE_MEM=0
@@ -119,14 +119,5 @@ CONFIG_ESP32S3_NO_BLOBS=
 CONFIG_ESP32S3_RTCDATA_IN_FAST_MEM=
 CONFIG_ESP32S3_USE_FIXED_STATIC_RAM_SIZE=
 
-#
-# Supplicant
-#
-CONFIG_WPA_MBEDTLS_CRYPTO=y
-# CONFIG_WPA_WAPI_PSK is not set
-# CONFIG_WPA_DEBUG_PRINT is not set
-# CONFIG_WPA_TESTING_OPTIONS is not set
-# CONFIG_WPA_WPS_STRICT is not set
-# CONFIG_WPA_11KV_SUPPORT is not set
-# end of Supplicant
-# end of Component config
+# WPA enterprise
+WPA_MBEDTLS_CRYPTO=y
