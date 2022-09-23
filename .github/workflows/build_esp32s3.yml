@@ -34,7 +34,7 @@ jobs:
           echo "esp-idf-commit=$IDF_COMMIT" >> $GITHUB_ENV
           TFLM_COMMIT=$(git submodule status tensorflow | awk '{print ($1)}')
           echo "tflm-commit=$TFLM_COMMIT" >> $GITHUB_ENV
-#      - name: Cache esp-idf
+#      - name: Cache esp-id
 #        id: cache-esp-idf
 #        uses: actions/cache@v2
 #        env:
