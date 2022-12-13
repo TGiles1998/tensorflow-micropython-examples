@@ -34,8 +34,5 @@ include(${CMAKE_CURRENT_LIST_DIR}/../micropython-ulab/code/micropython.cmake)
 # the camera driver
 #include(${CMAKE_CURRENT_LIST_DIR}/micropython-camera-driver/micropython.cmake)
 
-# Ucrypto doesn't work
-#include(${CMAKE_CURRENT_LIST_DIR}/ucrypto/micropython.cmake)
-
 # mpy-mbedtls
 include(${CMAKE_CURRENT_LIST_DIR}/mpy-mbedtls/micropython.cmake)
