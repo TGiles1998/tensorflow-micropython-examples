@@ -17,6 +17,6 @@
 [submodule "micropython-modules/ucrypto"]
 	path = micropython-modules/ucrypto
 	url = https://github.com/MATTYGILO/ucrypto
-[submodule "micropython-modules/myp-mbedtls"]
-	path = micropython-modules/myp-mbedtls
+[submodule "micropython-modules/mpy-mbedtls"]
+	path = micropython-modules/mpy-mbedtls
 	url = https://github.com/MATTYGILO/mpy-mbedtls
