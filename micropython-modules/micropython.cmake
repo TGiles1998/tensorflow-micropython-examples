@@ -36,5 +36,3 @@ include(${CMAKE_CURRENT_LIST_DIR}/../micropython-ulab/code/micropython.cmake)
 
 # the camera driver
 include(${CMAKE_CURRENT_LIST_DIR}/ucrypto/micropython.cmake)
-
-
