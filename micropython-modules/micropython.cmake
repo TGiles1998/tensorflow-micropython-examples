@@ -39,4 +39,3 @@ include(${CMAKE_CURRENT_LIST_DIR}/../micropython-ulab/code/micropython.cmake)
 
 # mpy-mbedtls
 include(${CMAKE_CURRENT_LIST_DIR}/mpy-mbedtls/micropython.cmake)
-
