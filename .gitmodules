@@ -16,4 +16,4 @@
 	branch = master
 [submodule "micropython-modules/ucrypto"]
 	path = micropython-modules/ucrypto
-	url = https://github.com/dmazzella/ucrypto
+	url = https://github.com/MATTYGILO/ucrypto
