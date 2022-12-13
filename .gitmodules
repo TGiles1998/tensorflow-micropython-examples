@@ -14,3 +14,6 @@
 	path = tflm_esp_kernels
 	url = https://github.com/espressif/tflite-micro-esp-examples.git
 	branch = master
+[submodule "micropython-modules/ucrypto"]
+	path = micropython-modules/ucrypto
+	url = https://github.com/dmazzella/ucrypto
