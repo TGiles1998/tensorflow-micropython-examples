@@ -30,3 +30,7 @@ set(SDKCONFIG_DEFAULTS ${CMAKE_BINARY_DIR}/sdkconfig.combined)
 # Include main IDF cmake file and define the project.
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(micropython)
+
+# mbedtls include
+
+include_directories(${PROJECT_DIR}/mpy-mbedtls/mbedtls)
