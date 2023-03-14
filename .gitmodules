@@ -10,3 +10,6 @@
 	path = micropython-ulab
 	url = https://github.com/v923z/micropython-ulab.git
 	branch = master
+[submodule "mpy-mbedtls"]
+	path = mpy-mbedtls
+	url = https://github.com/Carglglz/mpy-mbedtls.git
