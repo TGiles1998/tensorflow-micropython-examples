@@ -299,6 +299,7 @@ const mp_obj_module_t mp_module_x509 = {
     .globals = (mp_obj_dict_t *)&mp_module_x509_globals,
 };
 
-MP_REGISTER_MODULE(MP_QSTR_x509, mp_module_x509);
+MP_REGISTER_MODULE(MP_QSTR_x509, mp_module_x509, MODULE_X509_ENABLED);
+
 
 
