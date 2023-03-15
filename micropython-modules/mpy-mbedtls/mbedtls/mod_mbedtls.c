@@ -17,7 +17,7 @@
 #include "mbedtls/ctr_drbg.h"
 #include "mbedtls/debug.h"
 #include "mbedtls/error.h"
-//#include "mbedtls/mbedtls_config.h"
+#include "mbedtls_config.h"
 
 #define FORMAT_PEM              0
 #define FORMAT_DER              1
