@@ -14,16 +14,10 @@ msg = "hello world"
 # Sign
 signature = keyp.sign(msg)
 
-print(signature)
-print("len(signature): ", len(signature))
-
 assert isinstance(signature, bytes)
 print("Signature: OK")
 
 # Verify signature
-
-# Signature needs to be bytes
-# Msg can be string
 
 verification = keyp.verify(msg, signature)
 

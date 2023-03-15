@@ -8,7 +8,7 @@ except ImportError:
 
 
 # Gen key pair
-keyp = mbedtls.ec_gen_key("secp256k1", format=mbedtls.FORMAT_DER)
+keyp = mbedtls.ec_gen_key("secp256r1", format=mbedtls.FORMAT_DER)
 
 assert isinstance(keyp, tuple)
 
