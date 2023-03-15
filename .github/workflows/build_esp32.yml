@@ -1,15 +1,15 @@
 
 name: ESP32
 
-# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#onschedule
-on:
-  push:
-  pull_request:
-    paths-ignore:
-      - 'examples/**'
-      - 'README.md'
-      - 'ci/*unix*.sh'
-      - '.github/workflows/build_unix.yml'
+## https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#onschedule
+#on:
+#  push:
+#  pull_request:
+#    paths-ignore:
+#      - 'examples/**'
+#      - 'README.md'
+#      - 'ci/*unix*.sh'
+#      - '.github/workflows/build_unix.yml'
 
 jobs:
   tensorflow_micropython_esp32_build:

@@ -1,22 +1,22 @@
 
 name: RP2
 
-# https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#onschedule
-on:
-  push:
-    paths-ignore:
-      - 'examples/**'
-      - 'README.md'
-      - 'ci/*unix*.sh'
-      - '.github/workflows/build_unix.yml'
-      - '.github/workflows/build_esp32.yml'
-  pull_request:
-    paths-ignore:
-      - 'examples/**'
-      - 'README.md'
-      - 'ci/*unix*.sh'
-      - '.github/workflows/build_unix.yml'
-      - '.github/workflows/build_esp32.yml'
+## https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#onschedule
+#on:
+#  push:
+#    paths-ignore:
+#      - 'examples/**'
+#      - 'README.md'
+#      - 'ci/*unix*.sh'
+#      - '.github/workflows/build_unix.yml'
+#      - '.github/workflows/build_esp32.yml'
+#  pull_request:
+#    paths-ignore:
+#      - 'examples/**'
+#      - 'README.md'
+#      - 'ci/*unix*.sh'
+#      - '.github/workflows/build_unix.yml'
+#      - '.github/workflows/build_esp32.yml'
 
 jobs:
   tensorflow_micropython_rp2_build:
