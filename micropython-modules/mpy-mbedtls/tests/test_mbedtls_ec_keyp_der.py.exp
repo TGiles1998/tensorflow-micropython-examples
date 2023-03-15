@@ -1,0 +1,4 @@
+EC Key Pair: 2, <class 'tuple'>
+Derive public key: OK
+Signature: <class 'bytes'>
+Valid signature:  True
